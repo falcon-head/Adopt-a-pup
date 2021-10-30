@@ -9,14 +9,46 @@ import {
   Icon,
   Button,
   Center,
+  NumberInput,
 } from 'native-base';
 import React, { useState } from 'react';
 import { MaterialIcons } from '@expo/vector-icons';
+import { createUserWithEmailAndPassword } from 'firebase/auth';
+import { auth, app, db } from '../../firebase';
+import { getDocs, addDoc, collection } from 'firebase/firestore';
 
 export default function RegisterScreen() {
+  /**
+   * All the important use states
+   */
+
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [name, setName] = useState('');
+  const [phoneNumber, setPhoneNumber] = useState('');
+
+  /**
+   * Firebase fields
+   */
+
+  const userCollectionRef = collection(db, 'users');
+
+  // use state for toggling the password state
   const [showPassword, setshowPassword] = useState(false);
 
+  // Toggle password function
   const handleShowClick = () => setshowPassword(!showPassword);
+
+  // Register on click
+
+  const onRegister = () => {
+    createUserWithEmailAndPassword(auth, email, password)
+      .then((userCredential) => {
+        const user = userCredential.user;
+        console.log(user.email);
+      })
+      .catch((error) => alert(error.message));
+  };
 
   return (
     <Box
@@ -41,6 +73,8 @@ export default function RegisterScreen() {
               </FormControl.Label>
               <Input
                 size="xl"
+                value={name}
+                onChangeText={(text) => setName(text)}
                 variant="outline"
                 placeholder="John Doe"
                 fontFamily="Regular"
@@ -54,6 +88,8 @@ export default function RegisterScreen() {
               </FormControl.Label>
               <Input
                 size="xl"
+                value={email}
+                onChangeText={(text) => setEmail(text)}
                 variant="outline"
                 placeholder="johndoe@gmail.com"
                 fontFamily="Regular"
@@ -70,6 +106,8 @@ export default function RegisterScreen() {
                 variant="outline"
                 fontFamily="Regular"
                 size="xl"
+                value={password}
+                onChangeText={(text) => setPassword(text)}
                 InputRightElement={
                   <Icon
                     as={
@@ -95,7 +133,11 @@ export default function RegisterScreen() {
                 </Text>
               </FormControl.Label>
               <Input
+                isRequired
+                keyboardType="number-pad"
                 size="xl"
+                value={phoneNumber}
+                onChangeText={(text) => setPhoneNumber(text)}
                 variant="outline"
                 placeholder="9998989999"
                 fontFamily="Regular"
@@ -105,9 +147,12 @@ export default function RegisterScreen() {
               <Button
                 size="lg"
                 variant="solid"
-                color="orange.100"
+                colorScheme="violet"
                 fontFamily="Regular"
-                backgroundColor="indigo.700"
+                _text={{
+                  color: 'white',
+                }}
+                onPress={() => onRegister()}
               >
                 Register
               </Button>

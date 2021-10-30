@@ -33,6 +33,7 @@ const NavTab = () => {
           color: Colors.metalGray,
           fontFamily: 'Medium',
         },
+        headerShown: false,
       }}
       screenOptions={({ route }) => ({
         tabBarIcon: ({ focused, color, size }) => {
@@ -51,9 +52,21 @@ const NavTab = () => {
         },
       })}
     >
-      <Tab.Screen name={CommonStrings.homes} component={Home} />
-      <Tab.Screen name={CommonStrings.donation} component={Donations} />
-      <Tab.Screen name={CommonStrings.setting} component={Setting} />
+      <Tab.Screen
+        options={{ headerShown: false }}
+        name={CommonStrings.homes}
+        component={Home}
+      />
+      <Tab.Screen
+        options={{ headerShown: false }}
+        name={CommonStrings.donation}
+        component={Donations}
+      />
+      <Tab.Screen
+        options={{ headerShown: false }}
+        name={CommonStrings.setting}
+        component={Setting}
+      />
     </Tab.Navigator>
   );
 };
@@ -102,7 +115,7 @@ export default function App() {
   if (fontLoaded) {
     return (
       <NativeBaseProvider>
-        <Navigation />
+        <LoginScreen />
       </NativeBaseProvider>
     );
   } else {
