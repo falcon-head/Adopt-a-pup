@@ -13,16 +13,46 @@ import {
   FormControl,
   Button,
   Image,
+  Link,
 } from 'native-base';
 import { MaterialIcons } from '@expo/vector-icons';
 import { StatusBar } from 'expo-status-bar';
+import { auth, db, app } from '../../firebase';
 import { ImageBackground, StyleSheet, Dimensions } from 'react-native';
+import { signInWithEmailAndPassword } from '@firebase/auth';
 
 export default function LoginScreen() {
+  /**
+   * All the state with values go here
+   */
+
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+
+  // other useStates
   const [showPassword, setshowPassword] = useState(false);
+
+  // Get height and width of the  window
   let { height, width } = Dimensions.get('window');
 
+  // Show password on click
   const handleShowClick = () => setshowPassword(!showPassword);
+
+  // handle the login
+  const onLoginPress = () => {
+    if (email || password === '') {
+      alert('You need to fill up all the fields');
+    } else {
+      signInWithEmailAndPassword(auth, email, password)
+        .then((userCredential) => {
+          const user = userCredential.user;
+          console.log(user);
+        })
+        .catch((error) => {
+          alert(error.message);
+        });
+    }
+  };
 
   return (
     <Box
@@ -49,10 +79,13 @@ export default function LoginScreen() {
                 </Text>
               </FormControl.Label>
               <Input
+                isRequired
                 size="xl"
                 variant="outline"
                 placeholder="johndoe@gmail.com"
                 fontFamily="Regular"
+                value={email}
+                onChangeText={(text) => setEmail(text)}
               />
             </Box>
             <Box>
@@ -62,10 +95,13 @@ export default function LoginScreen() {
                 </Text>
               </FormControl.Label>
               <Input
+                isRequired
                 type={showPassword ? 'text' : 'password'}
                 variant="outline"
                 fontFamily="Regular"
                 size="xl"
+                value={password}
+                onChangeText={(text) => setPassword(text)}
                 InputRightElement={
                   <Icon
                     as={
@@ -85,18 +121,30 @@ export default function LoginScreen() {
                 }
               />
               <FormControl.Label>
-                <Text fontFamily="Regular" fontSize="16" marginTop="3">
+                <Link
+                  fontFamily="Regular"
+                  fontSize="16"
+                  marginTop="3"
+                  isUnderlined={false}
+                  _text={{
+                    color: 'blue.400',
+                  }}
+                  onPress={() => console.log('forgot password clicked')}
+                >
                   Forgot Password?
-                </Text>
+                </Link>
               </FormControl.Label>
             </Box>
             <Box>
               <Button
                 size="lg"
                 variant="solid"
-                color="orange.100"
+                colorScheme="violet"
                 fontFamily="Regular"
-                backgroundColor="indigo.700"
+                _text={{
+                  color: 'white',
+                }}
+                onPress={() => onLoginPress()}
               >
                 Log In
               </Button>
