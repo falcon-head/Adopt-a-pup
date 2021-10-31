@@ -11,11 +11,12 @@ import {
   Center,
   NumberInput,
 } from 'native-base';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { MaterialIcons } from '@expo/vector-icons';
 import { createUserWithEmailAndPassword } from 'firebase/auth';
 import { auth, app, db } from '../../firebase';
 import { getDocs, addDoc, collection } from 'firebase/firestore';
+import { useNavigation } from '@react-navigation/core';
 
 export default function RegisterScreen() {
   /**
@@ -24,8 +25,7 @@ export default function RegisterScreen() {
 
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [name, setName] = useState('');
-  const [phoneNumber, setPhoneNumber] = useState('');
+  const [confirm, setConfirm] = useState('');
 
   /**
    * Firebase fields
@@ -35,19 +35,40 @@ export default function RegisterScreen() {
 
   // use state for toggling the password state
   const [showPassword, setshowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const [invalid, setInvalid] = useState(false);
 
-  // Toggle password function
+  // Small functions
   const handleShowClick = () => setshowPassword(!showPassword);
+  const handleShowConfirmClick = () =>
+    setShowConfirmPassword(!showConfirmPassword);
+
+  // use navigation
+  const navigation = useNavigation();
+
+  // use effect to check if the passwords match
+  useEffect(() => {
+    if (password !== confirm) {
+      setInvalid(true);
+    } else {
+      setInvalid(false);
+    }
+  }, [confirm]);
 
   // Register on click
-
   const onRegister = () => {
-    createUserWithEmailAndPassword(auth, email, password)
-      .then((userCredential) => {
-        const user = userCredential.user;
-        console.log(user.email);
-      })
-      .catch((error) => alert(error.message));
+    if (email === '' || password === '') {
+      alert('Please fill in all fields');
+    } else if (password !== confirm) {
+      alert('Passwords do not match');
+    } else {
+      createUserWithEmailAndPassword(auth, email, password)
+        .then((userCredential) => {
+          const user = userCredential.user;
+          console.log(user.email);
+        })
+        .catch((error) => alert(error.message));
+    }
   };
 
   return (
@@ -65,21 +86,6 @@ export default function RegisterScreen() {
         </Heading>
         <FormControl>
           <Stack space={2}>
-            <Box>
-              <FormControl.Label fontWeight="bold" fontFamily="Regular">
-                <Text fontFamily="Bold" fontSize="18">
-                  Name
-                </Text>
-              </FormControl.Label>
-              <Input
-                size="xl"
-                value={name}
-                onChangeText={(text) => setName(text)}
-                variant="outline"
-                placeholder="John Doe"
-                fontFamily="Regular"
-              />
-            </Box>
             <Box>
               <FormControl.Label fontWeight="bold" fontFamily="Regular">
                 <Text fontFamily="Bold" fontSize="18">
@@ -107,6 +113,7 @@ export default function RegisterScreen() {
                 fontFamily="Regular"
                 size="xl"
                 value={password}
+                placeholder="********"
                 onChangeText={(text) => setPassword(text)}
                 InputRightElement={
                   <Icon
@@ -127,21 +134,41 @@ export default function RegisterScreen() {
               />
             </Box>
             <Box marginBottom="5">
-              <FormControl.Label fontWeight="bold" fontFamily="Regular">
-                <Text fontFamily="Bold" fontSize="18">
-                  Contact No
-                </Text>
-              </FormControl.Label>
-              <Input
-                isRequired
-                keyboardType="number-pad"
-                size="xl"
-                value={phoneNumber}
-                onChangeText={(text) => setPhoneNumber(text)}
-                variant="outline"
-                placeholder="9998989999"
-                fontFamily="Regular"
-              />
+              <FormControl isInvalid={invalid}>
+                <FormControl.Label fontWeight="bold" fontFamily="Regular">
+                  <Text fontFamily="Bold" fontSize="18">
+                    Confirm Password
+                  </Text>
+                </FormControl.Label>
+                <Input
+                  type={showConfirmPassword ? 'text' : 'password'}
+                  size="xl"
+                  value={confirm}
+                  onChangeText={(text) => setConfirm(text)}
+                  variant="outline"
+                  fontFamily="Regular"
+                  placeholder="Confirm Password"
+                  InputRightElement={
+                    <Icon
+                      as={
+                        showPassword ? (
+                          <MaterialIcons name="visibility" />
+                        ) : (
+                          <MaterialIcons name="visibility-off" />
+                        )
+                      }
+                      size={5}
+                      mr="2"
+                      color="muted.400"
+                      onPress={handleShowConfirmClick}
+                      fontFamily="Regular"
+                    />
+                  }
+                />
+                <FormControl.ErrorMessage>
+                  Password does not match
+                </FormControl.ErrorMessage>
+              </FormControl>
             </Box>
             <Box>
               <Button
