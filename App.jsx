@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { StyleSheet, View } from 'react-native';
-import { extendTheme, NativeBaseProvider, Text, Box } from 'native-base';
+import { extendTheme, NativeBaseProvider, Text, Box, Stack } from 'native-base';
 import AppLoading from 'expo-app-loading';
 import * as Font from 'expo-font';
 import LoginScreen from './Components/Logins/LoginScreen';
@@ -18,6 +18,7 @@ import DonationDetails from './Components/Detail-Screens/DonationDetails';
 import { Colors } from './Styles/Colors';
 
 const Tab = createBottomTabNavigator();
+const HomeStack = createStackNavigator();
 
 /* Bottom tab configuration */
 
@@ -115,7 +116,20 @@ export default function App() {
   if (fontLoaded) {
     return (
       <NativeBaseProvider>
-        <LoginScreen />
+        <NavigationContainer>
+          <HomeStack.Navigator>
+            <HomeStack.Screen
+              options={{ headerShown: false }}
+              name="Login"
+              component={LoginScreen}
+            />
+            <HomeStack.Screen
+              options={{ headerShown: false }}
+              name="Register"
+              component={RegisterScreen}
+            />
+          </HomeStack.Navigator>
+        </NavigationContainer>
       </NativeBaseProvider>
     );
   } else {
