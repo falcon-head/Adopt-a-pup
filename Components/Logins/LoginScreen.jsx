@@ -20,6 +20,8 @@ import { StatusBar } from 'expo-status-bar';
 import { auth, db, app } from '../../firebase';
 import { ImageBackground, StyleSheet, Dimensions } from 'react-native';
 import { signInWithEmailAndPassword } from '@firebase/auth';
+import { useNavigation } from '@react-navigation/core';
+import { BlurView } from 'expo-blur';
 
 export default function LoginScreen() {
   /**
@@ -34,6 +36,9 @@ export default function LoginScreen() {
 
   // Get height and width of the  window
   let { height, width } = Dimensions.get('window');
+
+  // use navigation
+  const navigation = useNavigation();
 
   // Show password on click
   const handleShowClick = () => setshowPassword(!showPassword);
@@ -52,6 +57,11 @@ export default function LoginScreen() {
           alert(error.message);
         });
     }
+  };
+
+  // take user to signup page
+  const onSignUpPress = () => {
+    navigation.navigate('Register');
   };
 
   return (
@@ -150,7 +160,10 @@ export default function LoginScreen() {
               </Button>
               <Center my="4">
                 <Text fontFamily="Regular">
-                  Don't have an account ? <Text fontFamily="Bold">Sign-Up</Text>
+                  Don't have an account ?{' '}
+                  <Text fontFamily="Bold" onPress={() => onSignUpPress()}>
+                    Sign-Up
+                  </Text>
                 </Text>
               </Center>
             </Box>

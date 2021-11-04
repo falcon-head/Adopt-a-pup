@@ -1,6 +1,13 @@
 import React, { useState } from 'react';
 import { StyleSheet, View } from 'react-native';
-import { extendTheme, NativeBaseProvider, Text, Box, Stack } from 'native-base';
+import {
+  extendTheme,
+  NativeBaseProvider,
+  Text,
+  Box,
+  Stack,
+  StatusBar,
+} from 'native-base';
 import AppLoading from 'expo-app-loading';
 import * as Font from 'expo-font';
 import LoginScreen from './Components/Logins/LoginScreen';
@@ -28,6 +35,7 @@ const NavTab = () => {
       screenOptions={{
         activeTintColor: Colors.metalGray,
         fontFamily: 'Regular',
+        tabBarBackground: () => <BlurView tint="light" intensity={100} />,
         tabStyle: {
           marginBottom: 5,
           marginTop: 5,
@@ -88,7 +96,7 @@ const Navigation = () => {
           name={CommonStrings.home}
           children={() => <NavTab />}
         />
-        <BottomStack.Screen name="AdoptDetailScreen" component={HomeDetails} />
+        <BottomStack.Screen name="HomeDetailScreen" component={HomeDetails} />
         <BottomStack.Screen
           name="DonationDetailScreen"
           component={DonationDetails}
@@ -113,25 +121,41 @@ const getFonts = () => {
 export default function App() {
   const [fontLoaded, setFontLoaded] = useState(false);
 
+  const [user, setUser] = useState(1);
+
   if (fontLoaded) {
-    return (
-      <NativeBaseProvider>
-        <NavigationContainer>
-          <HomeStack.Navigator>
-            <HomeStack.Screen
-              options={{ headerShown: false }}
-              name="Login"
-              component={LoginScreen}
-            />
-            <HomeStack.Screen
-              options={{ headerShown: false }}
-              name="Register"
-              component={RegisterScreen}
-            />
-          </HomeStack.Navigator>
-        </NavigationContainer>
-      </NativeBaseProvider>
-    );
+    if (user) {
+      return (
+        <NativeBaseProvider>
+          <Navigation />
+        </NativeBaseProvider>
+      );
+    } else {
+      return (
+        <NativeBaseProvider>
+          <NavigationContainer>
+            <HomeStack.Navigator>
+              {user ? (
+                <Navigation />
+              ) : (
+                <>
+                  <HomeStack.Screen
+                    options={{ headerShown: false }}
+                    name="Login"
+                    component={LoginScreen}
+                  />
+                  <HomeStack.Screen
+                    options={{ headerShown: false }}
+                    name="Register"
+                    component={RegisterScreen}
+                  />
+                </>
+              )}
+            </HomeStack.Navigator>
+          </NavigationContainer>
+        </NativeBaseProvider>
+      );
+    }
   } else {
     return (
       <AppLoading
