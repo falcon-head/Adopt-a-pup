@@ -98,7 +98,7 @@ const styles = StyleSheet.create({
   },
   goBack: {
     position: 'absolute',
-    top: 30,
+    top: 40,
     left: 20,
     opacity: 0.7,
   },

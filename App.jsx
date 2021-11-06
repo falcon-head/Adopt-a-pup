@@ -23,6 +23,15 @@ import { CommonStrings } from './Styles/CommonStrings';
 import HomeDetails from './Components/Detail-Screens/HomeDetails';
 import DonationDetails from './Components/Detail-Screens/DonationDetails';
 import { Colors } from './Styles/Colors';
+import { BlurView } from 'expo-blur';
+
+//fonts
+const theme = extendTheme({
+  // Make sure values below matches any of the keys in `fontConfig`
+  fonts: {
+    heading: 'Bold',
+  },
+});
 
 const Tab = createBottomTabNavigator();
 const HomeStack = createStackNavigator();
@@ -32,18 +41,6 @@ const HomeStack = createStackNavigator();
 const NavTab = () => {
   return (
     <Tab.Navigator
-      screenOptions={{
-        activeTintColor: Colors.metalGray,
-        fontFamily: 'Regular',
-        tabBarBackground: () => <BlurView tint="light" intensity={100} />,
-        tabStyle: {
-          marginBottom: 5,
-          marginTop: 5,
-          color: Colors.metalGray,
-          fontFamily: 'Medium',
-        },
-        headerShown: false,
-      }}
       screenOptions={({ route }) => ({
         tabBarIcon: ({ focused, color, size }) => {
           let iconName;
@@ -58,6 +55,11 @@ const NavTab = () => {
 
           // You can return any component that you like here!
           return <Ionicons name={iconName} size={22} color={color} />;
+        },
+        tabBarActiveTintColor: Colors.metalGray,
+        tabBarStyle: {
+          color: Colors.metalGray,
+          fontFamily: 'Medium',
         },
       })}
     >
@@ -126,7 +128,7 @@ export default function App() {
   if (fontLoaded) {
     if (user) {
       return (
-        <NativeBaseProvider>
+        <NativeBaseProvider theme={theme}>
           <Navigation />
         </NativeBaseProvider>
       );
