@@ -20,6 +20,7 @@ export const CommonStrings = {
   share: 'Share app',
   rate: 'Rate us',
   contact: 'Contact us',
+  account: 'Account',
 
   // icons
   privacyIcon: 'lock-closed-outline',
