@@ -5,6 +5,8 @@ import { StyleSheet } from 'react-native';
 import React from 'react';
 import { Colors } from '../../Styles/Colors';
 import AdoptCard from '../Individuals/AdoptCard';
+import Header from '../Individuals/Header';
+import { CommonStrings } from '../../Styles/CommonStrings';
 
 const DATA = [
   {
@@ -107,17 +109,18 @@ export default function Home() {
   };
 
   return (
-    <Box style={styles.initialBox} px={8}>
+    <Box style={styles.initialBox} px={8} safeAreaTop>
       <StatusBar />
-      <Box safeAreaTop>
-        <FlatList
-          showsVerticalScrollIndicator={false}
-          data={DATA}
-          renderItem={TheCard}
-          nestedScrollEnabled={false}
-          keyExtractor={(item) => item.id}
-        />
-      </Box>
+      <Header text={CommonStrings.homes} />
+
+      <FlatList
+        showsVerticalScrollIndicator={false}
+        data={DATA}
+        renderItem={TheCard}
+        nestedScrollEnabled={false}
+        keyExtractor={(item) => item.id}
+        style={{ paddingTop: 20 }}
+      />
     </Box>
   );
 }

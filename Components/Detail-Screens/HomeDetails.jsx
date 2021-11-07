@@ -12,22 +12,41 @@ import {
   Avatar,
   Pressable,
 } from 'native-base';
-import { StyleSheet, Dimensions } from 'react-native';
+import { StyleSheet, Dimensions, Linking } from 'react-native';
 import React from 'react';
 import { Colors } from '../../Styles/Colors';
 import { Slider } from '../Individuals/Slider';
 import { useNavigation } from '@react-navigation/core';
 import { BlurView } from 'expo-blur';
 import { Ionicons } from '@expo/vector-icons';
-import { flex, fontFamily, style } from 'styled-system';
-import { alignItems } from 'styled-system';
+import { TouchableOpacity } from 'react-native-gesture-handler';
 
 // Get height and width of the  window
 let { height, width } = Dimensions.get('window');
 
 export default function HomeDetails({ navigation, route }) {
+  // Capture the data from route
   const { item } = route.params;
-  const navifations = useNavigation();
+
+  // Dummy values
+  const data = '+919964135666';
+
+  // Navigation hook
+  const navigations = useNavigation();
+
+  // Handle the onPress event of handleCallIntent
+  const handleCallIntent = () => {
+    // Call the phone number
+    // Link to the phone number
+    Linking.openURL(`tel:${data}`);
+  };
+
+  // Handle onPress event of handleMessageIntent
+  const handleMessageIntent = () => {
+    // Open the message intent
+    Linking.openURL(`sms:${data}`);
+  };
+
   return (
     <>
       <ScrollView style={styles.container} showsVerticalScrollIndicator={false}>
@@ -92,20 +111,24 @@ export default function HomeDetails({ navigation, route }) {
                   justifyContent="center"
                   alignItems="center"
                 >
-                  <Box style={styles.sideIconOne}>
-                    <Ionicons
-                      name="call"
-                      size={18}
-                      color={Colors.callButtonColorOne}
-                    />
-                  </Box>
-                  <Box style={styles.sideIconTwo}>
-                    <Ionicons
-                      name="ios-chatbubble"
-                      size={18}
-                      color={Colors.callButtonColorTwo}
-                    />
-                  </Box>
+                  <TouchableOpacity onPress={() => handleCallIntent()}>
+                    <Box style={styles.sideIconOne}>
+                      <Ionicons
+                        name="call"
+                        size={18}
+                        color={Colors.callButtonColorOne}
+                      />
+                    </Box>
+                  </TouchableOpacity>
+                  <TouchableOpacity onPress={() => handleMessageIntent()}>
+                    <Box style={styles.sideIconTwo}>
+                      <Ionicons
+                        name="ios-chatbubble"
+                        size={18}
+                        color={Colors.callButtonColorTwo}
+                      />
+                    </Box>
+                  </TouchableOpacity>
                 </HStack>
               </HStack>
             </Box>
@@ -213,9 +236,11 @@ export default function HomeDetails({ navigation, route }) {
           </Avatar.Group>
         </Box>
         <Pressable style={styles.pressableBox}>
-          <Box style={styles.adoptButton}>
-            <Text style={styles.adoptMeText}>Adopt Me</Text>
-          </Box>
+          <TouchableOpacity>
+            <Box style={styles.adoptButton}>
+              <Text style={styles.adoptMeText}>Adopt Me</Text>
+            </Box>
+          </TouchableOpacity>
         </Pressable>
       </Box>
     </>
