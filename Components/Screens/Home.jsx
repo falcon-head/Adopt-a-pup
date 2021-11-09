@@ -112,14 +112,13 @@ export default function Home() {
     <Box style={styles.initialBox} px={8} safeAreaTop>
       <StatusBar />
       <Header text={CommonStrings.homes} />
-
       <FlatList
         showsVerticalScrollIndicator={false}
         data={DATA}
         renderItem={TheCard}
         nestedScrollEnabled={false}
         keyExtractor={(item) => item.id}
-        style={{ paddingTop: 20 }}
+        contentContainerStyle={{ marginTop: 20, paddingBottom: 20 }}
       />
     </Box>
   );

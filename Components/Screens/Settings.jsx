@@ -2,9 +2,9 @@ import React from 'react';
 import { ScrollView, View, Box, useToast, Toast } from 'native-base';
 import { StyleSheet, Text, Linking, Platform, Share } from 'react-native';
 import { Colors } from '../../Styles/Colors';
-import { StatusBar } from 'expo-status-bar';
 import { CommonStrings } from '../../Styles/CommonStrings';
 import { SettingItem } from '../Individuals/SettingItem';
+import { StatusBar } from 'expo-status-bar';
 
 export default function Settings() {
   // Toast hook from native base
@@ -51,7 +51,6 @@ export default function Settings() {
   };
 
   // Share app link
-
   const onShare = async () => {
     try {
       const result = await Share.share({

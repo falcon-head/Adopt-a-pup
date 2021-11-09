@@ -23,7 +23,10 @@ import { CommonStrings } from './Styles/CommonStrings';
 import HomeDetails from './Components/Detail-Screens/HomeDetails';
 import DonationDetails from './Components/Detail-Screens/DonationDetails';
 import { Colors } from './Styles/Colors';
-import { BlurView } from 'expo-blur';
+import { enableScreens } from 'react-native-screens';
+import { createSharedElementStackNavigator } from 'react-navigation-shared-element';
+
+enableScreens();
 
 //fonts
 const theme = extendTheme({
@@ -34,7 +37,7 @@ const theme = extendTheme({
 });
 
 const Tab = createBottomTabNavigator();
-const HomeStack = createStackNavigator();
+const HomeStack = createSharedElementStackNavigator();
 
 /* Bottom tab configuration */
 
