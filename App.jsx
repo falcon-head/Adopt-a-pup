@@ -24,7 +24,7 @@ import HomeDetails from './Components/Detail-Screens/HomeDetails';
 import DonationDetails from './Components/Detail-Screens/DonationDetails';
 import { Colors } from './Styles/Colors';
 import { enableScreens } from 'react-native-screens';
-import { createSharedElementStackNavigator } from 'react-navigation-shared-element';
+import GoogleAuthLogin from './Components/Logins/GoogleAuthLogin';
 
 enableScreens();
 
@@ -37,7 +37,7 @@ const theme = extendTheme({
 });
 
 const Tab = createBottomTabNavigator();
-const HomeStack = createSharedElementStackNavigator();
+const HomeStack = createStackNavigator();
 
 /* Bottom tab configuration */
 
@@ -126,7 +126,7 @@ const getFonts = () => {
 export default function App() {
   const [fontLoaded, setFontLoaded] = useState(false);
 
-  const [user, setUser] = useState(1);
+  const [user, setUser] = useState();
 
   if (fontLoaded) {
     if (user) {
@@ -137,7 +137,7 @@ export default function App() {
       );
     } else {
       return (
-        <NativeBaseProvider>
+        <NativeBaseProvider theme={theme}>
           <NavigationContainer>
             <HomeStack.Navigator>
               {user ? (
@@ -147,7 +147,7 @@ export default function App() {
                   <HomeStack.Screen
                     options={{ headerShown: false }}
                     name="Login"
-                    component={LoginScreen}
+                    component={GoogleAuthLogin}
                   />
                   <HomeStack.Screen
                     options={{ headerShown: false }}

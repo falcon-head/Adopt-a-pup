@@ -72,13 +72,16 @@ const DonationDetails = ({ navigation, route }) => {
   );
 };
 
+// Shared element styles is only supported in react navigation v5 not v6
+// Below code is redundant - waiting for the support from developer
+
 DonationDetails.sharedElements = (route, otherRoute, showing) => {
   const { item } = route.params;
 
   console.log(item);
 
   return [
-    { id: `item.${item.id}.image`, animation: 'fade' },
+    { id: `item.${item.id}.image`, animation: 'move' },
     { id: `item.${item.id}.location`, animation: 'fade' },
     { id: `item.${item.id}.heading`, animation: 'fade' },
     { id: `item.${item.id}.para`, animation: 'fade' },

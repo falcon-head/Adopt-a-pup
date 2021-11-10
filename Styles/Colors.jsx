@@ -16,4 +16,6 @@ export const Colors = {
   callButtonColorTwo: '#A4C5ED',
   fixedBottomColor: '#282A4B',
   adoptButtonColor: '#6EB591',
+  subtleText: '#808080',
+  grayButtonBackground: '#F3F3F3',
 };
