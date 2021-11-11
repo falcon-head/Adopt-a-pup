@@ -108,10 +108,14 @@ export default function Home() {
     );
   };
 
+  const openFilter = () => {
+    navigations.navigate('FilterDetailScreen');
+  };
+
   return (
     <Box style={styles.initialBox} px={8} safeAreaTop>
       <StatusBar />
-      <Header text={CommonStrings.homes} />
+      <Header text={CommonStrings.homes} buttonPress={() => openFilter()} />
       <FlatList
         showsVerticalScrollIndicator={false}
         data={DATA}

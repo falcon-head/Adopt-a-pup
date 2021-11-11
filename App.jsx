@@ -25,6 +25,8 @@ import DonationDetails from './Components/Detail-Screens/DonationDetails';
 import { Colors } from './Styles/Colors';
 import { enableScreens } from 'react-native-screens';
 import GoogleAuthLogin from './Components/Logins/GoogleAuthLogin';
+import FilterDetail from './Components/Detail-Screens/FilterDetail';
+import { TransitionPresets } from '@react-navigation/stack';
 
 enableScreens();
 
@@ -97,15 +99,29 @@ const Navigation = () => {
           headerShown: false,
         }}
       >
-        <BottomStack.Screen
-          name={CommonStrings.home}
-          children={() => <NavTab />}
-        />
-        <BottomStack.Screen name="HomeDetailScreen" component={HomeDetails} />
-        <BottomStack.Screen
-          name="DonationDetailScreen"
-          component={DonationDetails}
-        />
+        <BottomStack.Group>
+          <BottomStack.Screen
+            name={CommonStrings.home}
+            children={() => <NavTab />}
+          />
+          <BottomStack.Screen name="HomeDetailScreen" component={HomeDetails} />
+          <BottomStack.Screen
+            name="DonationDetailScreen"
+            component={DonationDetails}
+            options={{
+              ...TransitionPresets.ModalSlideFromBottomIOS,
+            }}
+          />
+        </BottomStack.Group>
+        <BottomStack.Group screenOptions={{ presentation: 'modal' }}>
+          <BottomStack.Screen
+            name="FilterDetailScreen"
+            component={FilterDetail}
+            options={{
+              ...TransitionPresets.ModalPresentationIOS,
+            }}
+          />
+        </BottomStack.Group>
       </BottomStack.Navigator>
     </NavigationContainer>
   );
@@ -126,7 +142,7 @@ const getFonts = () => {
 export default function App() {
   const [fontLoaded, setFontLoaded] = useState(false);
 
-  const [user, setUser] = useState();
+  const [user, setUser] = useState(1);
 
   if (fontLoaded) {
     if (user) {
