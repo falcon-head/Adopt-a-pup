@@ -5,7 +5,6 @@ export const Colors = {
   metalGray: '#2C3539',
   accentColor: '#6c91c2',
   paraColor: '#89898A',
-  gray: '#C4C4C4',
   articleGray: '#5B5D63',
   foggy: '#767676',
   hof: '#484848',
@@ -16,4 +15,7 @@ export const Colors = {
   callButtonColorTwo: '#A4C5ED',
   fixedBottomColor: '#282A4B',
   adoptButtonColor: '#6EB591',
+  subtleText: '#808080',
+  grayButtonBackground: '#F3F3F3',
+  veryLightGray: '#FAFAFA',
 };

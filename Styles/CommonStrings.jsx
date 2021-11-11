@@ -21,6 +21,9 @@ export const CommonStrings = {
   rate: 'Rate us',
   contact: 'Contact us',
   account: 'Account',
+  welcome: 'Welcome Back!',
+  missed: "You've been missed",
+  signGoogle: 'Sign in with Google',
 
   // icons
   privacyIcon: 'lock-closed-outline',

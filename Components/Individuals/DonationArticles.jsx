@@ -70,7 +70,7 @@ const styles = StyleSheet.create({
   },
   locationText: {
     fontFamily: 'Regular',
-    color: Colors.gray,
+    color: Colors.lightGray,
   },
   cardContentHolder: {
     paddingTop: 5,

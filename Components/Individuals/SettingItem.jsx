@@ -30,7 +30,7 @@ const styles = StyleSheet.create({
     paddingBottom: 15,
     paddingTop: 15,
     borderBottomWidth: 0.5,
-    borderBottomColor: Colors.gray,
+    borderBottomColor: Colors.lightGray,
   },
   settingTitle: {
     fontFamily: 'Regular',
