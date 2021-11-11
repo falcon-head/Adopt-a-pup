@@ -5,8 +5,12 @@ import { Colors } from '../../Styles/Colors';
 import { CommonStrings } from '../../Styles/CommonStrings';
 import { SettingItem } from '../Individuals/SettingItem';
 import { StatusBar } from 'expo-status-bar';
+import { useNavigation } from '@react-navigation/core';
 
 export default function Settings() {
+  //use of navigation to move between the screens
+  const navigations = useNavigation();
+
   // Toast hook from native base
   const toast = useToast();
 
@@ -79,8 +83,8 @@ export default function Settings() {
         style={styles.settingsScrollView}
         showsVerticalScrollIndicator={false}
       >
-        <StatusBar />
         <Box style={styles.contentContainer} safeAreaTop>
+          <StatusBar />
           <Text style={styles.heading}> {CommonStrings.setting} </Text>
           <Box style={styles.settingView}>
             <Text style={styles.smallHeading}>{CommonStrings.account}</Text>
@@ -92,6 +96,7 @@ export default function Settings() {
             <SettingItem
               name={CommonStrings.toTheReader}
               icon={CommonStrings.people}
+              settingPressed={() => navigations.navigate('ToTheReaderDetail')}
             />
           </Box>
           <Box style={styles.settingView}>
@@ -136,6 +141,14 @@ export default function Settings() {
               name={CommonStrings.privacy}
               icon={CommonStrings.privacyIcon}
               settingPressed={() => openBrowser(2)}
+            />
+          </Box>
+          <Box style={styles.settingView}>
+            <Text style={styles.smallHeading}>{CommonStrings.signOut}</Text>
+            <SettingItem
+              name={CommonStrings.signOut}
+              icon={CommonStrings.logoutIcon}
+              settingPressed={() => openBrowser(1)}
               extraStyle={{ borderBottomWidth: 0 }}
             />
           </Box>

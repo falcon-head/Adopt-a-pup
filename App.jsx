@@ -27,6 +27,7 @@ import { enableScreens } from 'react-native-screens';
 import GoogleAuthLogin from './Components/Logins/GoogleAuthLogin';
 import FilterDetail from './Components/Detail-Screens/FilterDetail';
 import { TransitionPresets } from '@react-navigation/stack';
+import ToTheReader from './Components/Detail-Screens/ToTheReader';
 
 enableScreens();
 
@@ -117,6 +118,13 @@ const Navigation = () => {
           <BottomStack.Screen
             name="FilterDetailScreen"
             component={FilterDetail}
+            options={{
+              ...TransitionPresets.ModalPresentationIOS,
+            }}
+          />
+          <BottomStack.Screen
+            name="ToTheReaderDetail"
+            component={ToTheReader}
             options={{
               ...TransitionPresets.ModalPresentationIOS,
             }}

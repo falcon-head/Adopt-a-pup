@@ -24,6 +24,8 @@ export const CommonStrings = {
   welcome: 'Welcome Back!',
   missed: "You've been missed",
   signGoogle: 'Sign in with Google',
+  signOut: 'Sign out',
+  logoutIcon: 'log-out',
 
   // icons
   privacyIcon: 'lock-closed-outline',
