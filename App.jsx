@@ -3,7 +3,7 @@ import { StyleSheet, View } from 'react-native';
 import { extendTheme, NativeBaseProvider } from 'native-base';
 import AppLoading from 'expo-app-loading';
 import * as Font from 'expo-font';
-import { AuthProvider } from './hooks/auth';
+import { AuthProvider } from './hooks/useAuth';
 import MainScreen from './Components/MainScreen/MainScreen';
 
 //fonts

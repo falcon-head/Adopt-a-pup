@@ -17,7 +17,7 @@ import GoogleAuthLogin from '../Logins/GoogleAuthLogin';
 import FilterDetail from '../Detail-Screens/FilterDetail';
 import { TransitionPresets } from '@react-navigation/stack';
 import ToTheReader from '../Detail-Screens/ToTheReader';
-import auth from '../../hooks/auth';
+import useAuth from '../../hooks/useAuth';
 import { enableScreens } from 'react-native-screens';
 
 enableScreens();
@@ -115,7 +115,7 @@ const Navigation = () => {
 };
 
 export default function MainScreen() {
-  const { user } = auth();
+  const { user } = useAuth();
 
   if (user) {
     return <Navigation />;
