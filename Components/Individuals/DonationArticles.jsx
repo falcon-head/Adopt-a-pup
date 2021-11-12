@@ -26,6 +26,7 @@ export default function DonationArticles({ data, pressed }) {
                 }}
                 alt="image"
                 style={styles.heroImage}
+                defaultSource={require('../../assets/BackgroundLoading.png')}
               />
             </AspectRatio>
           </SharedElement>

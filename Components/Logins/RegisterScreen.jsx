@@ -62,7 +62,6 @@ export default function RegisterScreen() {
 
   // push the data user collection in the firebase with the help of the setDoc function
   async function addDocument(data) {
-    console.log(data);
     const docRef = await addDoc(userCollectionRef, data);
     console.log('docRef', docRef.path);
   }

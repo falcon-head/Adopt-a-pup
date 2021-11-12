@@ -33,10 +33,10 @@ const DonationDetails = ({ navigation, route }) => {
         <SharedElement id={`item.${item.id}.image`}>
           <AspectRatio ratio={3 / 2}>
             <Image
-              // defaultSource={require('../../../assets/images/default.png')}
               source={{ uri: item.imageURL }}
               alt="Hero Image"
               style={styles.heroImage}
+              defaultSource={require('../../assets/BackgroundLoading.png')}
             />
           </AspectRatio>
         </SharedElement>
@@ -77,8 +77,6 @@ const DonationDetails = ({ navigation, route }) => {
 
 DonationDetails.sharedElements = (route, otherRoute, showing) => {
   const { item } = route.params;
-
-  console.log(item);
 
   return [
     { id: `item.${item.id}.image`, animation: 'move' },

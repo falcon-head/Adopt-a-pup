@@ -6,13 +6,12 @@ const AuthContext = createContext({});
 // use createContext to store the user login data
 export const AuthProvider = ({ children }) => {
   return (
-    <View>
-      <AuthContext.Provider value={null}>{children}</AuthContext.Provider>
-    </View>
+    <AuthContext.Provider value={{ user: 'lol' }}>
+      {children}
+    </AuthContext.Provider>
   );
 };
 
-export default function useAuth() {
-  const context = useContext(AuthContext);
-  return context;
+export default function auth() {
+  return useContext(AuthContext);
 }
