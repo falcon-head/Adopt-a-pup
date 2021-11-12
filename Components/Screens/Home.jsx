@@ -7,7 +7,7 @@ import { Colors } from '../../Styles/Colors';
 import AdoptCard from '../Individuals/AdoptCard';
 import Header from '../Individuals/Header';
 import { CommonStrings } from '../../Styles/CommonStrings';
-import auth from '../../hooks/auth';
+import useAuth from '../../hooks/useAuth';
 
 const DATA = [
   {
@@ -96,7 +96,7 @@ export default function Home() {
   //use of navigation to move between the screens
   const navigations = useNavigation();
 
-  const { users } = auth();
+  const { users } = useAuth();
 
   const TheCard = ({ item }) => {
     return (
