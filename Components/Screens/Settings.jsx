@@ -79,13 +79,13 @@ export default function Settings() {
 
   return (
     <>
-      <ScrollView
-        style={styles.settingsScrollView}
-        showsVerticalScrollIndicator={false}
-      >
-        <Box style={styles.contentContainer} safeAreaTop>
-          <StatusBar />
-          <Text style={styles.heading}> {CommonStrings.setting} </Text>
+      <Box style={styles.contentContainer} safeAreaTop>
+        <StatusBar />
+        <Text style={styles.heading}> {CommonStrings.setting} </Text>
+        <ScrollView
+          style={styles.settingsScrollView}
+          showsVerticalScrollIndicator={false}
+        >
           <Box style={styles.settingView}>
             <Text style={styles.smallHeading}>{CommonStrings.account}</Text>
             <SettingItem
@@ -152,8 +152,8 @@ export default function Settings() {
               extraStyle={{ borderBottomWidth: 0 }}
             />
           </Box>
-        </Box>
-      </ScrollView>
+        </ScrollView>
+      </Box>
     </>
   );
 }
@@ -164,6 +164,8 @@ const styles = StyleSheet.create({
     backgroundColor: Colors.white,
   },
   contentContainer: {
+    flex: 1,
+    backgroundColor: Colors.white,
     paddingLeft: 25,
     paddingRight: 25,
   },
