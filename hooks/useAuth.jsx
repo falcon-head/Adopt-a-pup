@@ -1,4 +1,4 @@
-import React, { createContext, useContext } from 'react';
+import React, { createContext, useContext, useMemo, useState } from 'react';
 import { View, Text } from 'native-base';
 import * as Google from 'expo-google-app-auth';
 import {
@@ -8,6 +8,7 @@ import {
   signOut,
 } from '@firebase/auth';
 import { auth } from '../firebase';
+import { useEffect } from 'react';
 
 const AuthContext = createContext({});
 
@@ -23,23 +24,72 @@ const config = {
 
 // use createContext to store the user login data
 export const AuthProvider = ({ children }) => {
-  // handle sign in with google
-  const signInWithGoogleAsync = async () => {
-    await Google.logInAsync(config).then(async (result) => {
-      if (result.type === 'success') {
-        // add the data to firebase firestore
-        const { idToken, accessToken } = result;
-        const credential = GoogleAuthProvider.credential(idToken, accessToken);
-        await signInWithCredential(auth, credential);
-      }
+  // useStates
+  const [errors, setErrors] = useState(null);
+  const [user, setUser] = useState(null);
+  const [initialLoading, setInitialLoading] = useState(true);
 
-      return Promise.reject();
-    });
+  // auth logged in? useEffect
+  //if i login the useeffect will be run to track whether the user is logged in or not
+  // with unsubscribe from the auth state
+  useEffect(
+    () =>
+      // This is a listener, unsub function
+      onAuthStateChanged(auth, (user) => {
+        if (user) {
+          //get the user info
+          setUser(user);
+        } else {
+          // logout => simply set the user to null
+          setUser(null);
+        }
+
+        // setLoading to false
+        setInitialLoading(false);
+      }),
+
+    []
+  );
+
+  //logout fuctions
+  const logout = () => {
+    signOut(auth).catch((error) => setErrors(error));
   };
 
+  // handle sign in with google
+  const signInWithGoogleAsync = async () => {
+    await Google.logInAsync(config)
+      .then(async (result) => {
+        if (result.type === 'success') {
+          // add the data to firebase firestore
+          const { idToken, accessToken } = result;
+          const credential = GoogleAuthProvider.credential(
+            idToken,
+            accessToken
+          );
+          await signInWithCredential(auth, credential);
+        }
+
+        return Promise.reject();
+      })
+      .catch((error) => setErrors(error));
+  };
+
+  //using the memo to stop the re-renering of all the component
+  // cache most of the values, the render will run only when user and errors are triggered
+  const memoedValue = useMemo(
+    () => ({
+      user,
+      errors,
+      logout,
+      signInWithGoogleAsync,
+    }),
+    [user, errors]
+  );
+
   return (
-    <AuthContext.Provider value={{ user: null, signInWithGoogleAsync }}>
-      {children}
+    <AuthContext.Provider value={memoedValue}>
+      {!initialLoading && children}
     </AuthContext.Provider>
   );
 };

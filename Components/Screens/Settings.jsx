@@ -6,10 +6,14 @@ import { CommonStrings } from '../../Styles/CommonStrings';
 import { SettingItem } from '../Individuals/SettingItem';
 import { StatusBar } from 'expo-status-bar';
 import { useNavigation } from '@react-navigation/core';
+import useAuth from '../../hooks/useAuth';
 
 export default function Settings() {
   //use of navigation to move between the screens
   const navigations = useNavigation();
+
+  //logout
+  const { logout } = useAuth();
 
   // Toast hook from native base
   const toast = useToast();
@@ -148,7 +152,7 @@ export default function Settings() {
             <SettingItem
               name={CommonStrings.signOut}
               icon={CommonStrings.logoutIcon}
-              settingPressed={() => openBrowser(1)}
+              settingPressed={logout}
               extraStyle={{ borderBottomWidth: 0 }}
             />
           </Box>
