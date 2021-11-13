@@ -369,7 +369,7 @@ const styles = StyleSheet.create({
   healthBox: {
     borderWidth: 1,
     borderRadius: 10,
-    borderColor: Colors.gray,
+    borderColor: Colors.lightGray,
     marginTop: 15,
     padding: 20,
     display: 'flex',
@@ -385,7 +385,7 @@ const styles = StyleSheet.create({
   },
   healthDateText: {
     fontFamily: 'Bold',
-    color: Colors.gray,
+    color: Colors.lightGray,
     justifyContent: 'flex-start',
   },
   healthText: {

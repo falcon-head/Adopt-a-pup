@@ -19,6 +19,7 @@ import { TransitionPresets } from '@react-navigation/stack';
 import ToTheReader from '../Detail-Screens/ToTheReader';
 import useAuth from '../../hooks/useAuth';
 import { enableScreens } from 'react-native-screens';
+import { CardStyleInterpolators } from '@react-navigation/stack';
 
 enableScreens();
 
@@ -73,44 +74,42 @@ const BottomStack = createStackNavigator();
 
 const Navigation = () => {
   return (
-    <NavigationContainer>
-      <BottomStack.Navigator
-        screenOptions={{
-          headerShown: false,
-        }}
-      >
-        <BottomStack.Group>
-          <BottomStack.Screen
-            name={CommonStrings.home}
-            children={() => <NavTab />}
-          />
-          <BottomStack.Screen name="HomeDetailScreen" component={HomeDetails} />
-          <BottomStack.Screen
-            name="DonationDetailScreen"
-            component={DonationDetails}
-            options={{
-              ...TransitionPresets.ModalSlideFromBottomIOS,
-            }}
-          />
-        </BottomStack.Group>
-        <BottomStack.Group screenOptions={{ presentation: 'modal' }}>
-          <BottomStack.Screen
-            name="FilterDetailScreen"
-            component={FilterDetail}
-            options={{
-              ...TransitionPresets.ModalPresentationIOS,
-            }}
-          />
-          <BottomStack.Screen
-            name="ToTheReaderDetail"
-            component={ToTheReader}
-            options={{
-              ...TransitionPresets.ModalPresentationIOS,
-            }}
-          />
-        </BottomStack.Group>
-      </BottomStack.Navigator>
-    </NavigationContainer>
+    <BottomStack.Navigator
+      screenOptions={{
+        headerShown: false,
+      }}
+    >
+      <BottomStack.Group>
+        <BottomStack.Screen
+          name={CommonStrings.home}
+          children={() => <NavTab />}
+        />
+        <BottomStack.Screen name="HomeDetailScreen" component={HomeDetails} />
+        <BottomStack.Screen
+          name="DonationDetailScreen"
+          component={DonationDetails}
+          options={{
+            ...TransitionPresets.ModalSlideFromBottomIOS,
+          }}
+        />
+      </BottomStack.Group>
+      <BottomStack.Group screenOptions={{ presentation: 'modal' }}>
+        <BottomStack.Screen
+          name="FilterDetailScreen"
+          component={FilterDetail}
+          options={{
+            ...TransitionPresets.ModalPresentationIOS,
+          }}
+        />
+        <BottomStack.Screen
+          name="ToTheReaderDetail"
+          component={ToTheReader}
+          options={{
+            ...TransitionPresets.ModalPresentationIOS,
+          }}
+        />
+      </BottomStack.Group>
+    </BottomStack.Navigator>
   );
 };
 
@@ -118,7 +117,11 @@ export default function MainScreen() {
   const { user } = useAuth();
 
   if (user) {
-    return <Navigation />;
+    return (
+      <NavigationContainer>
+        <Navigation />
+      </NavigationContainer>
+    );
   } else {
     return (
       <NavigationContainer>
