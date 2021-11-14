@@ -1,6 +1,7 @@
 import { View, Text, StyleSheet, Image, TouchableOpacity } from 'react-native';
 import React from 'react';
 import { Colors } from '../../Styles/Colors';
+import { CommonStrings } from '../../Styles/CommonStrings';
 
 export default function AdoptCard({
   title,
@@ -34,7 +35,7 @@ export default function AdoptCard({
           }}
         >
           <TouchableOpacity style={styles.viewProfileHolder} onPress={pressed}>
-            <Text style={styles.viewProfile}>View Profile</Text>
+            <Text style={styles.viewProfile}>{CommonStrings.viewProfile}</Text>
           </TouchableOpacity>
         </View>
       </View>
@@ -74,6 +75,7 @@ const styles = StyleSheet.create({
     fontFamily: 'Medium',
     fontSize: 14,
     color: Colors.lightGray,
+    textTransform: 'capitalize',
   },
   desc: {
     fontFamily: 'Regular',
@@ -90,5 +92,6 @@ const styles = StyleSheet.create({
   },
   viewProfile: {
     color: Colors.white,
+    textTransform: 'capitalize',
   },
 });

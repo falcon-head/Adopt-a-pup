@@ -134,7 +134,7 @@ export default function FilterDetail() {
 const styles = StyleSheet.create({
   modalHolder: {
     flex: 1,
-    backgroundColor: Colors.grayButtonBackground,
+    backgroundColor: Colors.veryLightGray,
     marginBottom: 30,
   },
   modalContent: {

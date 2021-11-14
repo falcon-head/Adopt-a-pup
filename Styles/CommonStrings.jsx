@@ -26,8 +26,17 @@ export const CommonStrings = {
   signGoogle: 'Sign in with Google',
   signOut: 'Sign out',
   logoutIcon: 'log-out',
-
-  // icons
+  pageNotFound: 'Error 404',
+  pageNotFoundMessage:
+    "Maybe our Doggo has broken this page. Let's head back and try that again. Truth is out there..",
+  letsGoHome: "Let's go home",
+  sex: 'Sex',
+  age: 'Age',
+  temper: 'Temper',
+  viewProfile: 'View Profile',
+  summary: 'Summary',
+  healthHistory: 'Health History',
+  // icons names
   privacyIcon: 'lock-closed-outline',
   playstore: 'logo-google-playstore',
   shareIcon: 'share-social-outline',

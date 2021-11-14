@@ -18,4 +18,8 @@ export const Colors = {
   subtleText: '#808080',
   grayButtonBackground: '#F3F3F3',
   veryLightGray: '#FAFAFA',
+  lockscreenBackground: '#F5EAC5',
+  lockscreenText: '#233A81',
+  kindaGray: '#B1BFD8',
+  refreshButtonColor: '#3143F5',
 };
