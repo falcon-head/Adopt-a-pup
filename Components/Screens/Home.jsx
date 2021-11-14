@@ -2,12 +2,16 @@ import { Text, View, Box, ScrollView, FlatList } from 'native-base';
 import { StatusBar } from 'expo-status-bar';
 import { useNavigation } from '@react-navigation/core';
 import { StyleSheet } from 'react-native';
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Colors } from '../../Styles/Colors';
 import AdoptCard from '../Individuals/AdoptCard';
 import Header from '../Individuals/Header';
 import { CommonStrings } from '../../Styles/CommonStrings';
 import useAuth from '../../hooks/useAuth';
+import EmptyScreen from '../Detail-Screens/EmptyScreen';
+import { collection, onSnapshot } from '@firebase/firestore';
+import { db } from '../../firebase';
+import Loading from '../Detail-Screens/Loading';
 
 const DATA = [
   {
@@ -93,18 +97,46 @@ const DATA = [
 ];
 
 export default function Home() {
+  // data useState
+  const [data, setData] = useState([]);
+  //loading useState
+  const [loading, setLoading] = useState(true);
+
   //use of navigation to move between the screens
   const navigations = useNavigation();
 
-  const { users } = useAuth();
+  const { user } = useAuth();
+
+  // useEffect to fetch the data from firebase database "petdb"
+  useEffect(() => {
+    let unsub;
+
+    const fetchData = async () => {
+      //connecting to the firebase database
+      // mapping the data and flattening it
+      // saving the data in setData
+      unsub = onSnapshot(collection(db, 'petdb'), (snapshot) => {
+        setData(
+          snapshot.docs.map((doc) => ({
+            id: doc.id,
+            ...doc.data(),
+          }))
+        );
+        setLoading(false);
+      });
+    };
+
+    fetchData();
+    return unsub;
+  }, []);
 
   const TheCard = ({ item }) => {
     return (
       <AdoptCard
-        title={item.title}
+        title={item.name}
         breed={item.breed}
         age={item.age}
-        desc={item.desc}
+        desc={item.summary}
         imageUri={item.profileImage}
         pressed={() => navigations.navigate('HomeDetailScreen', { item })}
       />
@@ -116,18 +148,32 @@ export default function Home() {
   };
 
   return (
-    <Box style={styles.initialBox} px={8} safeAreaTop>
-      <StatusBar />
-      <Header text={CommonStrings.homes} buttonPress={() => openFilter()} />
-      <FlatList
-        showsVerticalScrollIndicator={false}
-        data={DATA}
-        renderItem={TheCard}
-        nestedScrollEnabled={false}
-        keyExtractor={(item) => item.id}
-        contentContainerStyle={{ marginTop: 20, paddingBottom: 20 }}
-      />
-    </Box>
+    <>
+      {!loading ? (
+        <Box style={styles.initialBox} px={8} safeAreaTop>
+          <StatusBar />
+          <Header text={CommonStrings.homes} buttonPress={() => openFilter()} />
+          {data.length > 0 ? (
+            <FlatList
+              showsVerticalScrollIndicator={false}
+              data={data}
+              renderItem={TheCard}
+              nestedScrollEnabled={false}
+              keyExtractor={(item) => item.id}
+              contentContainerStyle={{ marginTop: 20, paddingBottom: 20 }}
+              removeClippedSubviews={true}
+              maxToRenderPerBatch={8}
+              updateCellsBatchingPeriod={40}
+              initialNumToRender={5}
+            />
+          ) : (
+            <EmptyScreen />
+          )}
+        </Box>
+      ) : (
+        <Loading />
+      )}
+    </>
   );
 }
 

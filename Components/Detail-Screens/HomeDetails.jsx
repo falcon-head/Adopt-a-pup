@@ -20,6 +20,7 @@ import { useNavigation } from '@react-navigation/core';
 import { BlurView } from 'expo-blur';
 import { Ionicons } from '@expo/vector-icons';
 import { TouchableOpacity } from 'react-native-gesture-handler';
+import { CommonStrings } from '../../Styles/CommonStrings';
 
 // Get height and width of the  window
 let { height, width } = Dimensions.get('window');
@@ -29,22 +30,19 @@ export default function HomeDetails({ navigation, route }) {
   const { item } = route.params;
 
   // Dummy values
-  const data = '+919964135666';
-
-  // Navigation hook
-  const navigations = useNavigation();
+  const organizationContact = item.orgContact;
 
   // Handle the onPress event of handleCallIntent
   const handleCallIntent = () => {
     // Call the phone number
     // Link to the phone number
-    Linking.openURL(`tel:${data}`);
+    Linking.openURL(`tel:${organizationContact}`);
   };
 
   // Handle onPress event of handleMessageIntent
   const handleMessageIntent = () => {
     // Open the message intent
-    Linking.openURL(`sms:${data}`);
+    Linking.openURL(`sms:${organizationContact}`);
   };
 
   return (
@@ -54,40 +52,42 @@ export default function HomeDetails({ navigation, route }) {
         <Box paddingBottom="32">
           <Box>
             <Slider
-              arrayImage={item.images}
+              arrayImage={item.slideshow}
               backPressed={() => navigation.goBack()}
             />
             <Box style={styles.imageBottom}>
               <BlurView intensity={80} style={styles.blurContainer}>
-                <Heading style={styles.blurText}>Marthalia</Heading>
+                <Heading style={styles.blurText}>{item.name}</Heading>
               </BlurView>
             </Box>
           </Box>
           <Box style={styles.contentHolder}>
             <Box style={styles.headingHolder}>
-              <Heading style={styles.title}>Local Breed</Heading>
+              <Heading style={styles.title}>{item.breed}</Heading>
             </Box>
             <Box style={styles.location}>
               <Ionicons name="location-sharp" size={18} color="black" />
-              <Text style={styles.locationValue}>Bangalore</Text>
+              <Text style={styles.locationValue}>{item.location}</Text>
             </Box>
             <HStack space={3} style={styles.hStack}>
               <Box style={styles.insideInfo}>
                 <Center>
-                  <Text style={styles.infoText}>Sex</Text>
-                  <Text style={styles.infoValue}>Female</Text>
+                  <Text style={styles.infoText}>{CommonStrings.sex}</Text>
+                  <Text style={styles.infoValue}>{item.gender}</Text>
                 </Center>
               </Box>
               <Box style={styles.insideInfo}>
                 <Center>
-                  <Text style={styles.infoText}>Age</Text>
-                  <Text style={styles.infoValue}>1 Month</Text>
+                  <Text style={styles.infoText}>{CommonStrings.age}</Text>
+                  <Text style={styles.infoValue}>
+                    {item.age.replace('old', '').replace('Old', '')}
+                  </Text>
                 </Center>
               </Box>
               <Box style={styles.insideInfo}>
                 <Center>
-                  <Text style={styles.infoText}>Temper</Text>
-                  <Text style={styles.infoValue}>Hyperactive</Text>
+                  <Text style={styles.infoText}>{CommonStrings.temper}</Text>
+                  <Text style={styles.infoValue}>{item.temper}</Text>
                 </Center>
               </Box>
             </HStack>
@@ -96,14 +96,14 @@ export default function HomeDetails({ navigation, route }) {
                 <Avatar
                   size="md"
                   source={{
-                    uri: 'https://pbs.twimg.com/profile_images/1309797238651060226/18cm6VhQ_400x400.jpg',
+                    uri: item.orgProfile,
                   }}
                 />
                 <VStack style={styles.orgHolder} flex={1}>
                   <Heading style={styles.owner} size="md">
-                    Cupa Foundation
+                    {item.orgName}
                   </Heading>
-                  <Text style={styles.org}>Pet's Owner</Text>
+                  <Text style={styles.org}>{item.orgRelation}</Text>
                 </VStack>
                 <HStack
                   space={2}
@@ -133,34 +133,31 @@ export default function HomeDetails({ navigation, route }) {
               </HStack>
             </Box>
             <Box style={styles.summaryHolder}>
-              <Heading size="md" fontFamily="Bold">
-                Summary
+              <Heading size="lg" fontFamily="Bold">
+                {CommonStrings.summary}
               </Heading>
               <Text style={styles.summaryParagraph}>
-                Lorem ipsum dolor sit amet consectetur adipisicing elit.
-                Dignissimos quis quam sint assumenda incidunt doloremque
-                officia, veritatis soluta minus enim reprehenderit quibusdam ab
-                accusamus reiciendis eaque! Atque velit saepe esse?
+                {item.summary.replace(/\\n/g, '\n').replace(/\\t/g, '\t')}
               </Text>
             </Box>
             <Box style={styles.summaryHolder}>
-              <Heading size="md" fontFamily="Bold">
-                Health History
+              <Heading size="lg" fontFamily="Bold">
+                {CommonStrings.healthHistory}
               </Heading>
               <Box style={styles.listViewBox}>
-                <Box style={styles.healthBox}>
-                  <HStack display="flex" flexDirection="row" display="flex">
-                    <Box style={styles.circle}></Box>
-                    <VStack paddingLeft="5">
-                      <Text style={styles.healthDateText}>
-                        Tuesday, 25th may
-                      </Text>
-                      <Heading size="sm" style={styles.healthText}>
-                        Rabies vaccination @ some medical
-                      </Heading>
-                    </VStack>
-                  </HStack>
-                </Box>
+                {item.health.map((item, index) => (
+                  <Box style={styles.healthBox} key={index}>
+                    <HStack display="flex" flexDirection="row" display="flex">
+                      <Box style={styles.circle}></Box>
+                      <VStack paddingLeft="5">
+                        <Text style={styles.healthDateText}>{item.date}</Text>
+                        <Heading size="md" style={styles.healthText}>
+                          {item.detail}
+                        </Heading>
+                      </VStack>
+                    </HStack>
+                  </Box>
+                ))}
               </Box>
             </Box>
           </Box>
@@ -318,6 +315,7 @@ const styles = StyleSheet.create({
   infoValue: {
     fontFamily: 'Bold',
     fontSize: 18,
+    textTransform: 'capitalize',
   },
   contactHolder: {
     paddingTop: 10,
@@ -361,10 +359,11 @@ const styles = StyleSheet.create({
   },
   summaryParagraph: {
     paddingTop: 10,
-    lineHeight: 20,
+    lineHeight: 24,
     color: Colors.black,
-    fontSize: 16,
+    fontSize: 18,
     fontFamily: 'Regular',
+    letterSpacing: 0.2,
   },
   healthBox: {
     borderWidth: 1,
@@ -387,6 +386,7 @@ const styles = StyleSheet.create({
     fontFamily: 'Bold',
     color: Colors.lightGray,
     justifyContent: 'flex-start',
+    fontSize: 16,
   },
   healthText: {
     fontFamily: 'Bold',
