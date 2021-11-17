@@ -22,7 +22,7 @@ export default function DonationArticles({ data, pressed }) {
             <AspectRatio ratio={16 / 9} style={styles.aspectRatio}>
               <Image
                 source={{
-                  uri: data.imageURL,
+                  uri: data.heroImage,
                 }}
                 alt="image"
                 style={styles.heroImage}
@@ -42,7 +42,7 @@ export default function DonationArticles({ data, pressed }) {
               </SharedElement>
               <SharedElement id={`item.${data.id}.para`}>
                 <Text numberOfLines={2} style={styles.donationDesc}>
-                  {data.description}
+                  {data.paragraph}
                 </Text>
               </SharedElement>
             </Stack>

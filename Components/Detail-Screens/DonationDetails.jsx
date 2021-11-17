@@ -33,7 +33,7 @@ const DonationDetails = ({ navigation, route }) => {
         <SharedElement id={`item.${item.id}.image`}>
           <AspectRatio ratio={3 / 2}>
             <Image
-              source={{ uri: item.imageURL }}
+              source={{ uri: item.heroImage }}
               alt="Hero Image"
               style={styles.heroImage}
               defaultSource={require('../../assets/BackgroundLoading.png')}
@@ -55,7 +55,9 @@ const DonationDetails = ({ navigation, route }) => {
                     {item.title}
                   </Heading>
                 </SharedElement>
-                <Text style={styles.paragraph}>{item.description}</Text>
+                <Text style={styles.paragraph}>
+                  {item.paragraph.replace(/\\n/g, '\n').replace(/\\t/g, '\t')}
+                </Text>
               </Stack>
             </Stack>
           </ScrollView>

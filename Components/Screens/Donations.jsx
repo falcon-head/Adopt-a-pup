@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { ScrollView, View, Box, FlatList } from 'native-base';
 import { StyleSheet, Text } from 'react-native';
 import { Colors } from '../../Styles/Colors';
@@ -6,6 +6,11 @@ import { StatusBar } from 'expo-status-bar';
 import { CommonStrings } from '../../Styles/CommonStrings';
 import DonationArticles from '../Individuals/DonationArticles';
 import { useNavigation } from '@react-navigation/core';
+import EmptyScreen from '../Detail-Screens/EmptyScreen';
+import { collection, onSnapshot } from '@firebase/firestore';
+import { db } from '../../firebase';
+import Loading from '../Detail-Screens/Loading';
+import useAuth from '../../hooks/useAuth';
 
 const DATA = [
   {
@@ -103,6 +108,35 @@ export default function Donations() {
   //use of navigation to move between the screens
   const navigations = useNavigation();
 
+  //use of the state to store the data
+  const [data, setData] = useState([]);
+
+  //loading state
+  const [loading, setLoading] = useState(true);
+
+  // useEffect to fetch the data from firebase database "petdb"
+  useEffect(() => {
+    let unsub;
+
+    const fetchData = async () => {
+      //connecting to the firebase database
+      // mapping the data and flattening it
+      // saving the data in setData
+      unsub = onSnapshot(collection(db, 'donationdb'), (snapshot) => {
+        setData(
+          snapshot.docs.map((doc) => ({
+            id: doc.id,
+            ...doc.data(),
+          }))
+        );
+        setLoading(false);
+      });
+    };
+
+    fetchData();
+    return unsub;
+  }, []);
+
   const donateCard = ({ item }) => {
     return (
       <DonationArticles
@@ -113,24 +147,37 @@ export default function Donations() {
   };
 
   return (
-    <Box style={styles.settingsScrollView} safeAreaTop>
-      <StatusBar />
-      <View>
-        <Text style={styles.heading}> {CommonStrings.donation} </Text>
-      </View>
-      <FlatList
-        showsVerticalScrollIndicator={false}
-        data={DATA}
-        renderItem={donateCard}
-        nestedScrollEnabled={false}
-        keyExtractor={(item) => item.id.toString()}
-        width="100%"
-        contentContainerStyle={{
-          marginTop: 20,
-          paddingBottom: 30,
-        }}
-      />
-    </Box>
+    <>
+      {!loading ? (
+        <Box style={styles.settingsScrollView} safeAreaTop>
+          <StatusBar />
+          <View>
+            <Text style={styles.heading}> {CommonStrings.donation} </Text>
+          </View>
+          {data.length > 0 ? (
+            <FlatList
+              showsVerticalScrollIndicator={false}
+              data={data}
+              renderItem={donateCard}
+              nestedScrollEnabled={false}
+              keyExtractor={(item) => item.id}
+              removeClippedSubviews={true}
+              maxToRenderPerBatch={8}
+              updateCellsBatchingPeriod={40}
+              initialNumToRender={5}
+              contentContainerStyle={{
+                marginTop: 20,
+                paddingBottom: 30,
+              }}
+            />
+          ) : (
+            <EmptyScreen />
+          )}
+        </Box>
+      ) : (
+        <Loading />
+      )}
+    </>
   );
 }
 

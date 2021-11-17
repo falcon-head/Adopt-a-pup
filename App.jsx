@@ -5,6 +5,7 @@ import AppLoading from 'expo-app-loading';
 import * as Font from 'expo-font';
 import { AuthProvider } from './hooks/useAuth';
 import MainScreen from './Components/MainScreen/MainScreen';
+import { StripeProvider } from '@stripe/stripe-react-native';
 
 //fonts
 const theme = extendTheme({
@@ -32,9 +33,11 @@ export default function App() {
   if (fontLoaded) {
     return (
       <NativeBaseProvider theme={theme}>
-        <AuthProvider>
-          <MainScreen />
-        </AuthProvider>
+        <StripeProvider publishableKey="pk_test_51JwBw9SC8udWIWgKb4gsgTJlhoPNnGc0rRQmkvtH9Fx5RhYn7qKFY2pgTnbZ6u3yLXb0jAiwF16a9gUMUWqGJvfN00KCiYW6uM">
+          <AuthProvider>
+            <MainScreen />
+          </AuthProvider>
+        </StripeProvider>
       </NativeBaseProvider>
     );
   } else {

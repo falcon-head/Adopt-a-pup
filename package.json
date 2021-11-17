@@ -35,7 +35,8 @@
     "react-native-web": "0.17.1",
     "react-navigation-shared-element": "^5.0.0-alpha1",
     "styled-components": "^5.3.3",
-    "styled-system": "^5.1.5"
+    "styled-system": "^5.1.5",
+    "@stripe/stripe-react-native": "0.2.2"
   },
   "devDependencies": {
     "@babel/core": "^7.12.9"
