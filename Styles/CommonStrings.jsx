@@ -36,6 +36,13 @@ export const CommonStrings = {
   viewProfile: 'View Profile',
   summary: 'Summary',
   healthHistory: 'Health History',
+  commonCancel: 'Cancel',
+  commonSave: 'Search',
+  commonFilter: 'Filters',
+  chooseYourPet: 'Choose Your Pet',
+  chooseYourLocation: 'Choose Your Location',
+  choosePet: 'Pet',
+  chooseLocation: 'Location',
   // icons names
   privacyIcon: 'lock-closed-outline',
   playstore: 'logo-google-playstore',
