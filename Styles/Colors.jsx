@@ -22,4 +22,6 @@ export const Colors = {
   lockscreenText: '#233A81',
   kindaGray: '#B1BFD8',
   refreshButtonColor: '#3143F5',
+  disabledButtonTextColor: '#666666',
+  disabledButtonColor: '#c4c4c4',
 };

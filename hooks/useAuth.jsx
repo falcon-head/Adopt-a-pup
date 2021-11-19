@@ -9,6 +9,8 @@ import {
 } from '@firebase/auth';
 import { auth } from '../firebase';
 import { useEffect } from 'react';
+import { doc, serverTimestamp, setDoc } from '@firebase/firestore';
+import { db } from '../firebase';
 
 const AuthContext = createContext({});
 
@@ -61,7 +63,6 @@ export const AuthProvider = ({ children }) => {
     await Google.logInAsync(config)
       .then(async (result) => {
         if (result.type === 'success') {
-          // add the data to firebase firestore
           const { idToken, accessToken } = result;
           const credential = GoogleAuthProvider.credential(
             idToken,
@@ -69,6 +70,8 @@ export const AuthProvider = ({ children }) => {
           );
           await signInWithCredential(auth, credential);
         }
+        const user = result.user;
+        pushToDB(user);
 
         return Promise.reject();
       })

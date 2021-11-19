@@ -95,18 +95,20 @@ const Navigation = () => {
       </BottomStack.Group>
       <BottomStack.Group screenOptions={{ presentation: 'modal' }}>
         <BottomStack.Screen
-          name="FilterDetailScreen"
-          component={FilterDetail}
-          options={{
-            ...TransitionPresets.ModalPresentationIOS,
-          }}
-        />
-        <BottomStack.Screen
           name="ToTheReaderDetail"
           component={ToTheReader}
           options={{
             ...TransitionPresets.ModalPresentationIOS,
           }}
+        />
+      </BottomStack.Group>
+      <BottomStack.Group>
+        <BottomStack.Screen
+          name="FilterDetailScreen"
+          component={FilterDetail}
+          // options={{
+          //   ...TransitionPresets.RevealFromBottomAndroid,
+          // }}
         />
       </BottomStack.Group>
     </BottomStack.Navigator>
