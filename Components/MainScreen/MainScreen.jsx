@@ -107,7 +107,7 @@ const Navigation = () => {
           name="FilterDetailScreen"
           component={FilterDetail}
           // options={{
-          //   ...TransitionPresets.RevealFromBottomAndroid,
+          //   ...TransitionPresets.DefaultTransition,
           // }}
         />
       </BottomStack.Group>

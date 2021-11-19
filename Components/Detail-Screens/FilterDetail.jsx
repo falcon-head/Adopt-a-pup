@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import {
   Box,
   Center,
@@ -23,6 +23,12 @@ const { width, height } = Dimensions.get('window');
 export default function FilterDetail() {
   // navigation
   const navigation = useNavigation();
+
+  useEffect(() => {
+    navigation.addListener('beforeRemove', (e) => {
+      e.preventDefault();
+    });
+  }, [navigation]);
 
   return (
     <Box style={styles.modalHolder}>
