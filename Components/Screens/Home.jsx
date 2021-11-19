@@ -88,10 +88,6 @@ export default function Home() {
         .map((item) => item.location)
         .filter((item, index, self) => self.indexOf(item) === index)
     );
-
-    return () => {
-      console.log('unsub');
-    };
   }, [filter]);
 
   // Handle the filter search
@@ -324,7 +320,7 @@ const styles = StyleSheet.create({
   },
   heading: {
     fontFamily: 'Bold',
-    color: 'grey',
+    color: Colors.metalGray,
     fontSize: 16,
   },
   bottomButtons: {

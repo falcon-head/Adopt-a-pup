@@ -43,6 +43,17 @@ export const CommonStrings = {
   chooseYourLocation: 'Choose Your Location',
   choosePet: 'Pet',
   chooseLocation: 'Location',
+  adoptMe: 'Adopt Me',
+  adopted: 'Taken',
+  almostThere: 'Almost there!',
+  contact: 'Contact Number',
+  address: 'Your Address',
+  commonUpdate: 'Update Profile',
+  requested: 'Requested',
+
+  thankYou: 'Thank you',
+  thankYouMessage:
+    'Your adoption interest has been recorded. One of our representative will reach out to you soon. Until then you can sit back and relax. ',
   // icons names
   privacyIcon: 'lock-closed-outline',
   playstore: 'logo-google-playstore',

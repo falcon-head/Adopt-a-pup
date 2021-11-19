@@ -11,16 +11,36 @@ import {
   VStack,
   Avatar,
   Pressable,
+  Modal,
+  Input,
+  Button,
+  FormControl,
+  useToast,
 } from 'native-base';
 import { StyleSheet, Dimensions, Linking } from 'react-native';
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Colors } from '../../Styles/Colors';
 import { Slider } from '../Individuals/Slider';
-import { useNavigation } from '@react-navigation/core';
 import { BlurView } from 'expo-blur';
 import { Ionicons } from '@expo/vector-icons';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import { CommonStrings } from '../../Styles/CommonStrings';
+import useAuth from '../../hooks/useAuth';
+import {
+  addDoc,
+  getDoc,
+  updateDoc,
+  doc,
+  setDoc,
+  arrayUnion,
+  query,
+  where,
+  collection,
+  getDocs,
+} from '@firebase/firestore';
+import { db } from '../../firebase';
+import ButtonLoader from '../../assets/Animations/Done/button-loading.json';
+import LottieView from 'lottie-react-native';
 
 // Get height and width of the  window
 let { height, width } = Dimensions.get('window');
@@ -28,6 +48,21 @@ let { height, width } = Dimensions.get('window');
 export default function HomeDetails({ navigation, route }) {
   // Capture the data from route
   const { item } = route.params;
+  const isadopt = item.adopted;
+  const userList = item.requestedUser;
+  const { user } = useAuth();
+
+  const [showModal, setShowModal] = useState(false);
+  const [phoneNumber, setPhoneNumber] = useState(null);
+  const [address, setAddress] = useState(null);
+  const [buttonLoader, setButtonLoader] = useState(false);
+  const [userRequestedForAdoption, setUserRequestedForAdoption] =
+    useState(false);
+
+  const emptyCheck = !phoneNumber || !address;
+
+  //toast initialization
+  const toast = useToast();
 
   // Dummy values
   const organizationContact = item.orgContact;
@@ -43,6 +78,80 @@ export default function HomeDetails({ navigation, route }) {
   const handleMessageIntent = () => {
     // Open the message intent
     Linking.openURL(`sms:${organizationContact}`);
+  };
+
+  //handle adoption request
+  const handleAdoptionRequest = async () => {
+    setButtonLoader(true);
+    // check if the user present in the firebase user database
+    // if not present then add the user to the database
+    // get the collection ref
+    const docRef = doc(db, 'users', user.uid);
+    const docSnap = await getDoc(docRef);
+    const petRef = doc(db, 'petdb', item.id);
+
+    if (docSnap.exists()) {
+      // push the petId to user liked array
+      try {
+        await updateDoc(petRef, {
+          likedUsers: arrayUnion(user.photoURL),
+        });
+      } catch (error) {
+        alert(error);
+      }
+
+      try {
+        await updateDoc(petRef, {
+          requestedUser: arrayUnion(user.uid),
+        });
+      } catch (error) {
+        alert(error);
+      }
+
+      try {
+        await updateDoc(docRef, {
+          requestedPet: arrayUnion({
+            id: item.id,
+            name: item.name,
+            profileImage: item.profileImage,
+          }),
+        });
+        navigation.navigate('FilterDetailScreen');
+      } catch (error) {
+        alert('Something went wrong');
+      }
+      setButtonLoader(false);
+    } else {
+      // add the user to the database
+      console.log('I need to add the user to the database');
+      setShowModal(true);
+    }
+  };
+
+  // handle the button and liked user request
+  useEffect(() => {
+    if (userList.length > 0) {
+      if (userList.includes(user.uid)) {
+        setUserRequestedForAdoption(true);
+      }
+    }
+  }, []);
+
+  // update user data
+  const updateUserData = () => {
+    setShowModal(false);
+    setDoc(doc(db, 'users', user.uid), {
+      name: user.displayName,
+      email: user.email,
+      photoURL: user.photoURL,
+      uid: user.uid,
+      phoneNumber: phoneNumber,
+      addressTwo: address,
+      requestedPet: [],
+    });
+    toast.show({
+      description: 'Your profile has been updated successfully',
+    });
   };
 
   return (
@@ -165,81 +274,132 @@ export default function HomeDetails({ navigation, route }) {
       </ScrollView>
       <Box style={styles.stickyBottom}>
         <Box>
-          <Avatar.Group size="md" max={2}>
-            <Avatar
-              bg="green.500"
-              source={{
-                uri: 'https://pbs.twimg.com/profile_images/1369921787568422915/hoyvrUpc_400x400.jpg',
-              }}
-            >
-              SS
-            </Avatar>
-            <Avatar
-              bg="lightBlue.500"
-              source={{
-                uri: 'https://pbs.twimg.com/profile_images/1309797238651060226/18cm6VhQ_400x400.jpg',
-              }}
-            >
-              AK
-            </Avatar>
-            <Avatar
-              bg="indigo.500"
-              source={{
-                uri: 'https://pbs.twimg.com/profile_images/1352844693151731713/HKO7cnlW_400x400.jpg',
-              }}
-            >
-              RS
-            </Avatar>
-            <Avatar
-              bg="amber.600"
-              source={{
-                uri: 'https://pbs.twimg.com/profile_images/1320985200663293952/lE_Kg6vr_400x400.jpg',
-              }}
-            >
-              MR
-            </Avatar>
-            <Avatar
-              bg="emerald.600"
-              source={{
-                uri: 'https://bit.ly/code-beast',
-              }}
-            >
-              CB
-            </Avatar>
-            <Avatar
-              bg="blue.600"
-              source={{
-                uri: 'https://pbs.twimg.com/profile_images/1177303899243343872/B0sUJIH0_400x400.jpg',
-              }}
-            >
-              GG
-            </Avatar>
-            <Avatar
-              bg="black.600"
-              source={{
-                uri: 'https://pbs.twimg.com/profile_images/1352844693151731713/HKO7cnlW_400x400.jpg',
-              }}
-            >
-              RS
-            </Avatar>
-            <Avatar
-              bg="blueGray.600"
-              source={{
-                uri: 'https://pbs.twimg.com/profile_images/1320985200663293952/lE_Kg6vr_400x400.jpg',
-              }}
-            >
-              MR
-            </Avatar>
-          </Avatar.Group>
+          {item.likedUsers.length > 0 ? (
+            <Avatar.Group size="md" max={2}>
+              {item.likedUsers.map((item, index) => (
+                <Avatar
+                  bg="green.500"
+                  key={index}
+                  source={{
+                    uri: item,
+                  }}
+                />
+              ))}
+            </Avatar.Group>
+          ) : (
+            <></>
+          )}
         </Box>
-        <Pressable style={styles.pressableBox}>
-          <TouchableOpacity>
-            <Box style={styles.adoptButton}>
-              <Text style={styles.adoptMeText}>Adopt Me</Text>
+        {isadopt ? (
+          <Pressable style={styles.pressableBox}>
+            <Box style={styles.adoptButtonGrayed}>
+              <Text style={styles.adoptMeTextGrayed}>
+                {CommonStrings.adopted}
+              </Text>
             </Box>
-          </TouchableOpacity>
-        </Pressable>
+          </Pressable>
+        ) : (
+          <>
+            {!userRequestedForAdoption ? (
+              <>
+                {buttonLoader ? (
+                  <Pressable style={styles.pressableBox}>
+                    <Box style={styles.adoptButtonLoading}>
+                      <LottieView
+                        source={ButtonLoader}
+                        autoPlay
+                        loop
+                        style={styles.lottieLoader}
+                      />
+                    </Box>
+                  </Pressable>
+                ) : (
+                  <Pressable style={styles.pressableBox}>
+                    <TouchableOpacity onPress={() => handleAdoptionRequest()}>
+                      <Box style={styles.adoptButton}>
+                        <Text style={styles.adoptMeText}>
+                          {CommonStrings.adoptMe}
+                        </Text>
+                      </Box>
+                    </TouchableOpacity>
+                  </Pressable>
+                )}
+              </>
+            ) : (
+              <Pressable style={styles.pressableBox}>
+                <Box style={styles.adoptButtonRequested}>
+                  <Text style={styles.adoptMeText}>
+                    {CommonStrings.requested}
+                  </Text>
+                </Box>
+              </Pressable>
+            )}
+          </>
+        )}
       </Box>
+      <Modal
+        isOpen={showModal}
+        onClose={() => {
+          setPhoneNumber(null);
+          setAddress(null);
+          setShowModal(false);
+        }}
+        size="lg"
+      >
+        <Modal.Content>
+          <Modal.CloseButton />
+          <Modal.Header>{CommonStrings.almostThere}</Modal.Header>
+          <Modal.Body>
+            <FormControl>
+              <FormControl.Label>{CommonStrings.contact}</FormControl.Label>
+              <Input
+                keyboardType="phone-pad"
+                placeholder="9999999999"
+                onChangeText={setPhoneNumber}
+              />
+            </FormControl>
+            <FormControl mt="3">
+              <FormControl.Label>{CommonStrings.address}</FormControl.Label>
+              <Input
+                onChangeText={setAddress}
+                height={20}
+                textAlignVertical="top"
+                multiline
+              />
+            </FormControl>
+          </Modal.Body>
+          <Modal.Footer>
+            <Button.Group space={2}>
+              <Button
+                variant="ghost"
+                colorScheme="blueGray"
+                onPress={() => {
+                  setShowModal(false);
+                  setPhoneNumber(null);
+                  setAddress(null);
+                }}
+              >
+                {CommonStrings.commonCancel}
+              </Button>
+              {emptyCheck ? (
+                <Button
+                  onPress={() => updateUserData()}
+                  style={{ backgroundColor: Colors.disabledButtonColor }}
+                  _text={{
+                    color: Colors.disabledButtonTextColor,
+                  }}
+                >
+                  {CommonStrings.commonUpdate}
+                </Button>
+              ) : (
+                <Button onPress={() => updateUserData()}>
+                  {CommonStrings.commonUpdate}
+                </Button>
+              )}
+            </Button.Group>
+          </Modal.Footer>
+        </Modal.Content>
+      </Modal>
     </>
   );
 }
@@ -413,6 +573,15 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
   },
+  adoptButtonGrayed: {
+    backgroundColor: Colors.disabledButtonColor,
+    height: 50,
+    borderRadius: 15,
+    width: '100%',
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
   pressableBox: {
     flex: 1,
     paddingLeft: 10,
@@ -421,5 +590,32 @@ const styles = StyleSheet.create({
     fontFamily: 'Bold',
     color: Colors.white,
     fontSize: 18,
+  },
+  adoptMeTextGrayed: {
+    color: Colors.disabledButtonTextColor,
+    fontFamily: 'Bold',
+    fontSize: 18,
+  },
+  adoptButtonLoading: {
+    backgroundColor: Colors.adoptButtonColor,
+    height: 50,
+    borderRadius: 15,
+    width: '100%',
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  lottieLoader: {
+    width: '100%',
+    height: 40,
+  },
+  adoptButtonRequested: {
+    backgroundColor: 'orange',
+    height: 50,
+    borderRadius: 15,
+    width: '100%',
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
   },
 });
