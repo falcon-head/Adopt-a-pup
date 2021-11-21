@@ -19,7 +19,8 @@ import { TransitionPresets } from '@react-navigation/stack';
 import ToTheReader from '../Detail-Screens/ToTheReader';
 import useAuth from '../../hooks/useAuth';
 import { enableScreens } from 'react-native-screens';
-import { CardStyleInterpolators } from '@react-navigation/stack';
+import PaymentSuccess from '../Detail-Screens/PaymentSuccess';
+import PaymentFailed from '../Detail-Screens/PaymentFailed';
 
 enableScreens();
 
@@ -93,22 +94,48 @@ const Navigation = () => {
           }}
         />
       </BottomStack.Group>
-      <BottomStack.Group screenOptions={{ presentation: 'modal' }}>
+      <BottomStack.Group screenOptions={{ presentation: 'transparentModal' }}>
         <BottomStack.Screen
           name="ToTheReaderDetail"
           component={ToTheReader}
-          options={{
-            ...TransitionPresets.ModalPresentationIOS,
-          }}
+          options={
+            Platform.OS === 'android'
+              ? {
+                  ...TransitionPresets.ModalPresentationIOS,
+                  cardOverlayEnabled: true,
+                  gestureEnabled: true,
+                  gestureResponseDistance: 135,
+                  detachPreviousScreen: true,
+                }
+              : {
+                  ...TransitionPresets.ModalPresentationIOS,
+                  cardOverlayEnabled: true,
+                  detachPreviousScreen: true,
+                }
+          }
         />
       </BottomStack.Group>
       <BottomStack.Group>
         <BottomStack.Screen
           name="FilterDetailScreen"
           component={FilterDetail}
-          // options={{
-          //   ...TransitionPresets.DefaultTransition,
-          // }}
+          options={{
+            ...TransitionPresets.DefaultTransition,
+          }}
+        />
+        <BottomStack.Screen
+          name="PaymentSuccessScreen"
+          component={PaymentSuccess}
+          options={{
+            ...TransitionPresets.DefaultTransition,
+          }}
+        />
+        <BottomStack.Screen
+          name="PaymentFailureScreen"
+          component={PaymentFailed}
+          options={{
+            ...TransitionPresets.DefaultTransition,
+          }}
         />
       </BottomStack.Group>
     </BottomStack.Navigator>

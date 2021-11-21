@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import {
   ScrollView,
   Text,
@@ -9,6 +9,10 @@ import {
   Stack,
   Heading,
   Pressable,
+  Modal,
+  FormControl,
+  Input,
+  Button,
 } from 'native-base';
 import { Share, StyleSheet } from 'react-native';
 import { Colors } from '../../Styles/Colors';
@@ -16,10 +20,55 @@ import { StatusBar } from 'expo-status-bar';
 import { Ionicons } from '@expo/vector-icons';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import { SharedElement } from 'react-navigation-shared-element';
+import { CommonStrings } from '../../Styles/CommonStrings';
+import { db } from '../../firebase';
+import {
+  addDoc,
+  getDoc,
+  updateDoc,
+  doc,
+  setDoc,
+  arrayUnion,
+  query,
+  where,
+  collection,
+  getDocs,
+} from '@firebase/firestore';
+import useAuth from '../../hooks/useAuth';
+import { useNavigation } from '@react-navigation/core';
 
 const DonationDetails = ({ navigation, route }) => {
   // Capture the data from route
   const { item } = route.params;
+
+  const navigations = useNavigation();
+
+  // get the user data from useAuth hook
+  const { user } = useAuth();
+
+  // modal component useState
+  const [showModal, setShowModal] = useState(false);
+  const [phoneNumber, setPhoneNumber] = useState(null);
+  const [address, setAddress] = useState(null);
+  const emptyCheck = !phoneNumber || !address;
+
+  // Handle the donation request
+  const handleDonate = async () => {
+    // Check if the user exists in firebase users database
+    const docRef = doc(db, 'users', user.uid);
+    const docSnap = await getDoc(docRef);
+
+    if (docSnap.exists()) {
+      // If the user exists, get the user data
+      console.log('user exists');
+      //navigate to PaymentSuccessScreen
+      navigations.navigate('PaymentFailureScreen');
+    } else {
+      // add the user to the database
+      console.log('I need to add the user to the database');
+      setShowModal(true);
+    }
+  };
 
   return (
     <>
@@ -51,7 +100,7 @@ const DonationDetails = ({ navigation, route }) => {
                   <Text style={styles.locationText}>{item.location}</Text>
                 </SharedElement>
                 <SharedElement id={`item.${item.id}.heading`}>
-                  <Heading size="lg" style={styles.headingStyle}>
+                  <Heading size="lg" style={[styles.headingStyle]}>
                     {item.title}
                   </Heading>
                 </SharedElement>
@@ -64,12 +113,75 @@ const DonationDetails = ({ navigation, route }) => {
         </Box>
         <Box style={styles.donationButton}>
           <Pressable style={styles.donateButton}>
-            <TouchableOpacity>
+            <TouchableOpacity onPress={() => handleDonate()}>
               <Text style={styles.donateText}>Donate</Text>
             </TouchableOpacity>
           </Pressable>
         </Box>
       </Box>
+      <Modal
+        isOpen={showModal}
+        onClose={() => {
+          setPhoneNumber(null);
+          setAddress(null);
+          setShowModal(false);
+        }}
+        size="lg"
+      >
+        <Modal.Content>
+          <Modal.CloseButton />
+          <Modal.Header>{CommonStrings.almostThere}</Modal.Header>
+          <Modal.Body>
+            <FormControl>
+              <FormControl.Label>{CommonStrings.contact}</FormControl.Label>
+              <Input
+                keyboardType="phone-pad"
+                placeholder="9999999999"
+                onChangeText={setPhoneNumber}
+              />
+            </FormControl>
+            <FormControl mt="3">
+              <FormControl.Label>{CommonStrings.address}</FormControl.Label>
+              <Input
+                onChangeText={setAddress}
+                height={20}
+                textAlignVertical="top"
+                multiline
+              />
+            </FormControl>
+          </Modal.Body>
+          <Modal.Footer>
+            <Button.Group space={2}>
+              <Button
+                variant="ghost"
+                colorScheme="blueGray"
+                onPress={() => {
+                  setShowModal(false);
+                  setPhoneNumber(null);
+                  setAddress(null);
+                }}
+              >
+                {CommonStrings.commonCancel}
+              </Button>
+              {emptyCheck ? (
+                <Button
+                  onPress={() => updateUserData()}
+                  style={{ backgroundColor: Colors.disabledButtonColor }}
+                  _text={{
+                    color: Colors.disabledButtonTextColor,
+                  }}
+                >
+                  {CommonStrings.commonUpdate}
+                </Button>
+              ) : (
+                <Button onPress={() => updateUserData()}>
+                  {CommonStrings.commonUpdate}
+                </Button>
+              )}
+            </Button.Group>
+          </Modal.Footer>
+        </Modal.Content>
+      </Modal>
     </>
   );
 };
@@ -128,6 +240,7 @@ const styles = StyleSheet.create({
   },
   headingStyle: {
     paddingTop: 10,
+    fontFamily: 'Bold',
   },
   paragraph: {
     fontSize: 18,

@@ -120,6 +120,7 @@ export default function HomeDetails({ navigation, route }) {
       } catch (error) {
         alert('Something went wrong');
       }
+
       setButtonLoader(false);
     } else {
       // add the user to the database
@@ -148,6 +149,7 @@ export default function HomeDetails({ navigation, route }) {
       phoneNumber: phoneNumber,
       addressTwo: address,
       requestedPet: [],
+      cards: [],
     });
     toast.show({
       description: 'Your profile has been updated successfully',
@@ -250,24 +252,36 @@ export default function HomeDetails({ navigation, route }) {
               </Text>
             </Box>
             <Box style={styles.summaryHolder}>
-              <Heading size="lg" fontFamily="Bold">
-                {CommonStrings.healthHistory}
-              </Heading>
-              <Box style={styles.listViewBox}>
-                {item.health.map((item, index) => (
-                  <Box style={styles.healthBox} key={index}>
-                    <HStack display="flex" flexDirection="row" display="flex">
-                      <Box style={styles.circle}></Box>
-                      <VStack paddingLeft="5">
-                        <Text style={styles.healthDateText}>{item.date}</Text>
-                        <Heading size="md" style={styles.healthText}>
-                          {item.detail}
-                        </Heading>
-                      </VStack>
-                    </HStack>
+              {item.health.length > 0 ? (
+                <>
+                  <Heading size="lg" fontFamily="Bold">
+                    {CommonStrings.healthHistory}
+                  </Heading>
+                  <Box style={styles.listViewBox}>
+                    {item.health.map((item, index) => (
+                      <Box style={styles.healthBox} key={index}>
+                        <HStack
+                          display="flex"
+                          flexDirection="row"
+                          display="flex"
+                        >
+                          <Box style={styles.circle}></Box>
+                          <VStack paddingLeft="5">
+                            <Text style={styles.healthDateText}>
+                              {item.date}
+                            </Text>
+                            <Heading size="md" style={styles.healthText}>
+                              {item.detail}
+                            </Heading>
+                          </VStack>
+                        </HStack>
+                      </Box>
+                    ))}
                   </Box>
-                ))}
-              </Box>
+                </>
+              ) : (
+                <> </>
+              )}
             </Box>
           </Box>
         </Box>
