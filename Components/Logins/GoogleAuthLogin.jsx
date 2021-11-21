@@ -73,6 +73,7 @@ const styles = StyleSheet.create({
     paddingTop: 10,
     fontFamily: 'Regular',
     color: Colors.subtleText,
+    textAlign: 'center',
   },
   buttonContainer: {
     marginTop: 30,

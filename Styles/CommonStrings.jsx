@@ -21,8 +21,9 @@ export const CommonStrings = {
   rate: 'Rate us',
   contact: 'Contact us',
   account: 'Account',
-  welcome: 'Welcome Back!',
-  missed: "You've been missed",
+  welcome: 'Woofer says Hi!',
+  missed:
+    'Hello there, we only use google sign to authenticate users to the app. You can remove permission to our app by signing into your google account. Woofer is waiting for you on the other side.',
   signGoogle: 'Sign in with Google',
   signOut: 'Sign out',
   logoutIcon: 'log-out',
