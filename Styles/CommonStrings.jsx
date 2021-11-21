@@ -50,10 +50,17 @@ export const CommonStrings = {
   address: 'Your Address',
   commonUpdate: 'Update Profile',
   requested: 'Requested',
-
   thankYou: 'Thank you',
   thankYouMessage:
     'Your adoption interest has been recorded. One of our representative will reach out to you soon. Until then you can sit back and relax. ',
+  thanksForYourDonation: 'Thanks for your donation!',
+  thanksForYourDonationMessage:
+    'Your donation has been recorded and it will make big impact on these animals. You will soon recieve an email from our organization confirming your donation. If you have any query reach out to us.',
+  goToDonations: 'Go to donations',
+  failedTransaction: 'Transaction Failed',
+  transactionFailedMessage:
+    'We are sorry, but your current payment method could not be processed. Please reach out to us or try again. Sorry for the inconvenience',
+  tryAgain: 'Try Again',
   // icons names
   privacyIcon: 'lock-closed-outline',
   playstore: 'logo-google-playstore',

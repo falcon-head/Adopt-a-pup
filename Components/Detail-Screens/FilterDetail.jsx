@@ -24,6 +24,7 @@ export default function FilterDetail() {
   // navigation
   const navigation = useNavigation();
 
+  // Prevent going back to the previous screen
   useEffect(() => {
     navigation.addListener('beforeRemove', (e) => {
       e.preventDefault();

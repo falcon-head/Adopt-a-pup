@@ -16,7 +16,7 @@ const theme = extendTheme({
 });
 
 /***
- * Async font loading. Please look at the expo for examples
+ * Async font loading. Please look at the expo for more examples
  ***/
 const getFonts = () => {
   return Font.loadAsync({
