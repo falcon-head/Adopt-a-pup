@@ -62,7 +62,7 @@ const DonationDetails = ({ navigation, route }) => {
       // If the user exists, get the user data
       console.log('user exists');
       //navigate to PaymentSuccessScreen
-      navigations.navigate('PaymentFailureScreen');
+      navigations.navigate('PaymentSuccessScreen');
     } else {
       // add the user to the database
       console.log('I need to add the user to the database');
