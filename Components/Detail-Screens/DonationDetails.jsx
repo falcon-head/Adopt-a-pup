@@ -36,6 +36,7 @@ import {
 } from '@firebase/firestore';
 import useAuth from '../../hooks/useAuth';
 import { useNavigation } from '@react-navigation/core';
+import RNUpiPayment from 'react-native-upi-payment';
 
 const DonationDetails = ({ navigation, route }) => {
   // Capture the data from route
@@ -59,10 +60,27 @@ const DonationDetails = ({ navigation, route }) => {
     const docSnap = await getDoc(docRef);
 
     if (docSnap.exists()) {
-      // If the user exists, get the user data
-      console.log('user exists');
       //navigate to PaymentSuccessScreen
-      navigations.navigate('PaymentSuccessScreen');
+      RNUpiPayment.initializePayment(
+        {
+          vpa: 'shrikrishnajois-2@okicici', // or can be john@ybl or mobileNo@upi
+          payeeName: 'Shrikrishna Joisa',
+          amount: '1',
+          transactionNote: 'This is a note',
+          transactionRef: 'aasf-332-aoei-fn',
+        },
+        successCallback,
+        failureCallback
+      );
+
+      function successCallback(transactionDetails) {
+        console.log('transactionDetails', transactionDetails);
+        navigations.navigate('PaymentSuccessScreen');
+      }
+
+      function failureCallback(transactionDetails) {
+        navigations.navigate('PaymentFailureScreen');
+      }
     } else {
       // add the user to the database
       console.log('I need to add the user to the database');

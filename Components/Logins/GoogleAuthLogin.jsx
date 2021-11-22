@@ -13,7 +13,7 @@ import auth from '../../hooks/useAuth';
 let { height, width } = Dimensions.get('window');
 
 export default function GoogleAuthLogin() {
-  const { signInWithGoogleAsync } = auth();
+  const { signInWithGoogle } = auth();
 
   return (
     <Box style={styles.mainBox}>
@@ -31,7 +31,7 @@ export default function GoogleAuthLogin() {
             <Text style={styles.missedText}>{CommonStrings.missed}</Text>
             <Box style={styles.buttonContainer}>
               <Box style={styles.buttonBackground}>
-                <TouchableOpacity onPress={signInWithGoogleAsync}>
+                <TouchableOpacity onPress={() => signInWithGoogle()}>
                   <HStack>
                     <Ionicons name="logo-google" size={24} color="orange" />
                     <Text style={styles.signText}>

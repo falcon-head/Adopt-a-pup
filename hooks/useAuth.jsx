@@ -6,13 +6,17 @@ import {
   onAuthStateChanged,
   signInWithCredential,
   signOut,
+  signInWithPopup,
+  createUserWithEmailAndPassword,
+  signInWithEmailAndPassword,
 } from '@firebase/auth';
 import { auth } from '../firebase';
 import { useEffect } from 'react';
-import { doc, serverTimestamp, setDoc } from '@firebase/firestore';
-import { db } from '../firebase';
 
-const AuthContext = createContext({});
+const AuthContext = createContext({
+  registerWithEmail: () => Promise,
+  logIn: () => Promise,
+});
 
 //items to get from the google login
 const config = {
@@ -53,29 +57,29 @@ export const AuthProvider = ({ children }) => {
     []
   );
 
+  // Register function to register with email and password
+  function registerWithEmail(email, password) {
+    return createUserWithEmailAndPassword(auth, email, password);
+  }
+
+  // Login function to login with email and password
+  function logIn(email, password) {
+    return signInWithEmailAndPassword(auth, email, password);
+  }
+
+  const signInWithGoogle = async () => {
+    // sign in with google
+    const provider = new GoogleAuthProvider();
+    try {
+      const result = await signInWithPopup(auth, provider);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   //logout fuctions
   const logout = () => {
     signOut(auth).catch((error) => setErrors(error));
-  };
-
-  // handle sign in with google
-  const signInWithGoogleAsync = async () => {
-    await Google.logInAsync(config)
-      .then(async (result) => {
-        if (result.type === 'success') {
-          const { idToken, accessToken } = result;
-          const credential = GoogleAuthProvider.credential(
-            idToken,
-            accessToken
-          );
-          await signInWithCredential(auth, credential);
-        }
-        const user = result.user;
-        pushToDB(user);
-
-        return Promise.reject();
-      })
-      .catch((error) => setErrors(error));
   };
 
   //using the memo to stop the re-renering of all the component
@@ -85,7 +89,9 @@ export const AuthProvider = ({ children }) => {
       user,
       errors,
       logout,
-      signInWithGoogleAsync,
+      signInWithGoogle,
+      registerWithEmail,
+      logIn,
     }),
     [user, errors]
   );

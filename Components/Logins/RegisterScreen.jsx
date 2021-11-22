@@ -20,6 +20,7 @@ import { auth, app, db } from '../../firebase';
 import { addDoc, collection } from 'firebase/firestore';
 import { useNavigation } from '@react-navigation/core';
 import { flex } from 'styled-system';
+import useAuth from '../../hooks/useAuth';
 
 export default function RegisterScreen() {
   /**
@@ -31,6 +32,8 @@ export default function RegisterScreen() {
   const [name, setName] = useState('');
   const [phone, setPhone] = useState('');
   const [confirm, setConfirm] = useState('');
+
+  const { registerWithEmail } = useAuth();
 
   /**
    * Firebase fields
@@ -77,24 +80,9 @@ export default function RegisterScreen() {
       console.log('Registering');
     }
 
-    createUserWithEmailAndPassword(auth, email, password)
-      .then((userCredential) => {
-        const uid = userCredential.user.uid;
-        const data = {
-          id: uid,
-          email: email,
-          name: name,
-          contact: phone,
-        };
-
-        addDocument(data);
-
-        Toast.show({
-          description: 'Registration Successful',
-        });
-        // navigation.navigate('Login');
-      })
-      .catch((error) => alert(error.message));
+    registerWithEmail(email, password)
+      .then((response) => console.log(response))
+      .catch((error) => console.log(error));
   };
 
   // handle login button click
