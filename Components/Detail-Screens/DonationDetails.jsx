@@ -36,6 +36,7 @@ import {
 } from '@firebase/firestore';
 import useAuth from '../../hooks/useAuth';
 import { useNavigation } from '@react-navigation/core';
+// import RazorpayCheckout from 'react-native-razorpay';
 
 const DonationDetails = ({ navigation, route }) => {
   // Capture the data from route
@@ -62,6 +63,26 @@ const DonationDetails = ({ navigation, route }) => {
       // If the user exists, get the user data
       console.log('user exists');
       //navigate to PaymentSuccessScreen
+      // var instance = new Razorpay({
+      //   key_id: 'rzp_test_IOAyfkNCSkGWBi',
+      //   key_secret: '2ogGUJ7KwPOwRgp3UouvDOxf',
+      // });
+
+      // functions.https.onRequest(async (req, res) => {
+      //   try {
+      //     const order = await instance.orders.create({
+      //       amount: 500,
+      //       currency: 'INR',
+      //       receipt: `testtsf`,
+      //       payment_capture: 1,
+      //     });
+      //     console.log(order);
+      //   } catch (e) {
+      //     console.log(e);
+      //     res.status(403).send({ error: 'Something went wrong' });
+      //   }
+      // });
+
       navigations.navigate('PaymentSuccessScreen');
     } else {
       // add the user to the database

@@ -3,7 +3,10 @@ import { StyleSheet, View } from 'react-native';
 import LoginScreen from '../Logins/LoginScreen';
 import RegisterScreen from '../Logins/RegisterScreen';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import { createStackNavigator } from '@react-navigation/stack';
+import {
+  CardStyleInterpolators,
+  createStackNavigator,
+} from '@react-navigation/stack';
 import { NavigationContainer } from '@react-navigation/native';
 import Setting from '../Screens/Settings';
 import Home from '../Screens/Home';
@@ -94,7 +97,7 @@ const Navigation = () => {
           }}
         />
       </BottomStack.Group>
-      <BottomStack.Group screenOptions={{ presentation: 'transparentModal' }}>
+      <BottomStack.Group screenOptions={{ presentation: 'modal' }}>
         <BottomStack.Screen
           name="ToTheReaderDetail"
           component={ToTheReader}

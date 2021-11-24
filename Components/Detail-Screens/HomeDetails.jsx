@@ -82,7 +82,6 @@ export default function HomeDetails({ navigation, route }) {
 
   //handle adoption request
   const handleAdoptionRequest = async () => {
-    setButtonLoader(true);
     // check if the user present in the firebase user database
     // if not present then add the user to the database
     // get the collection ref
@@ -91,6 +90,7 @@ export default function HomeDetails({ navigation, route }) {
     const petRef = doc(db, 'petdb', item.id);
 
     if (docSnap.exists()) {
+      setButtonLoader(true);
       // push the petId to user liked array
       try {
         await updateDoc(petRef, {
