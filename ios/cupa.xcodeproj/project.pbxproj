@@ -229,11 +229,11 @@
 			);
 			inputPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-cupa/Pods-cupa-frameworks.sh",
-				"${PODS_ROOT}/razorpay-pod/Pod/Razorpay.framework",
+				"${PODS_XCFRAMEWORKS_BUILD_DIR}/CFSDK/CFSDK.framework/CFSDK",
 			);
 			name = "[CP] Embed Pods Frameworks";
 			outputPaths = (
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Razorpay.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/CFSDK.framework",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
