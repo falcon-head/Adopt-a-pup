@@ -150,9 +150,11 @@ export default function HomeDetails({ navigation, route }) {
       addressTwo: address,
       requestedPet: [],
       cards: [],
+      donations: [],
     });
     toast.show({
-      description: 'Your profile has been updated successfully',
+      description:
+        'Your profile has been updated successfully. You are ready to go',
     });
   };
 

@@ -5,6 +5,9 @@ import AppLoading from 'expo-app-loading';
 import * as Font from 'expo-font';
 import { AuthProvider } from './hooks/useAuth';
 import MainScreen from './Components/MainScreen/MainScreen';
+import { LogBox } from 'react-native';
+LogBox.ignoreLogs(['Warning: ...']); // Ignore log notification by message
+LogBox.ignoreAllLogs();
 
 //fonts
 const theme = extendTheme({
