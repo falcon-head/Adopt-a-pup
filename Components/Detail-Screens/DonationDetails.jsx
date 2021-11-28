@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   ScrollView,
   Text,
@@ -21,7 +21,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import { SharedElement } from 'react-navigation-shared-element';
 import { CommonStrings } from '../../Styles/CommonStrings';
-import { db } from '../../firebase';
+import { app, db } from '../../firebase';
 import {
   addDoc,
   getDoc,
@@ -36,6 +36,12 @@ import {
 } from '@firebase/firestore';
 import useAuth from '../../hooks/useAuth';
 import { useNavigation } from '@react-navigation/core';
+import RNPgReactNativeSDK from 'react-native-pg-react-native-sdk';
+import {
+  httpsCallable,
+  connectFunctionsEmulator,
+  getFunctions,
+} from 'firebase/functions';
 
 const DonationDetails = ({ navigation, route }) => {
   // Capture the data from route
@@ -48,9 +54,65 @@ const DonationDetails = ({ navigation, route }) => {
 
   // modal component useState
   const [showModal, setShowModal] = useState(false);
+  const [modalVisible, setModalVisible] = React.useState(false);
+
+  // extra data useStates
   const [phoneNumber, setPhoneNumber] = useState(null);
   const [address, setAddress] = useState(null);
+  var [donationAmount, setDonationAmount] = useState(1);
+  var [responseState, setResponseState] = useState('');
+  var [apiResult, setApiResult] = useState([]);
+
   const emptyCheck = !phoneNumber || !address;
+
+  const proceedToPayment = () => {
+    setModalVisible(false);
+
+    const orderData = { amount: donationAmount };
+
+    // function to handle the donation
+    const functions = getFunctions();
+    // connectFunctionsEmulator(functions, 'localhost', 8081);
+    const extraData = httpsCallable(functions, 'getOrderData');
+    extraData(orderData)
+      .then((result) => {
+        console.log(result);
+        setApiResult(result.data);
+      })
+      .catch((error) => {
+        console.log(error.code);
+        console.log(error.message);
+        console.log(error.details);
+      });
+
+    if (apiResult.length > 0) {
+      //whenver the api result is set run this
+      var inputParams = {
+        orderId: apiResult.id,
+        orderAmount: parseFloat(apiResult.amount),
+        orderCurrency: apiResult.currency,
+        tokenData: apiResult.data.cftoken,
+        customerName: user.name,
+        customerPhone: '',
+        customerEmail: user.email,
+        notifyUrl: '',
+        appId: '1100126e5eef8ffc5bbe085ced210011',
+        orderNote: 'Donation for' + item.name,
+      };
+
+      // //retrieve the id
+      RNPgReactNativeSDK.startPaymentUPI(inputParams, 'TEST', (result) => {
+        console.log(result);
+        var resp = '';
+        var obj = JSON.parse(result, function (key, value) {
+          console.log(key);
+          console.log(value);
+          resp += key + ' : ' + value + '\n';
+        });
+        setResponseState(resp);
+      });
+    }
+  };
 
   // Handle the donation request
   const handleDonate = async () => {
@@ -60,9 +122,11 @@ const DonationDetails = ({ navigation, route }) => {
 
     if (docSnap.exists()) {
       // If the user exists, get the user data
-      console.log('user exists');
       //navigate to PaymentSuccessScreen
-      navigations.navigate('PaymentSuccessScreen');
+      // Add enter amount modal
+      setModalVisible(true);
+
+      // navigations.navigate('PaymentSuccessScreen');
     } else {
       // add the user to the database
       console.log('I need to add the user to the database');
@@ -178,6 +242,31 @@ const DonationDetails = ({ navigation, route }) => {
                   {CommonStrings.commonUpdate}
                 </Button>
               )}
+            </Button.Group>
+          </Modal.Footer>
+        </Modal.Content>
+      </Modal>
+      <Modal isOpen={modalVisible} onClose={setModalVisible} size="lg">
+        <Modal.Content minH="200">
+          <Modal.Header>Donation Amount</Modal.Header>
+          <Modal.Body>
+            <Input
+              variant="underlined"
+              placeholder="500"
+              size="lg"
+              keyboardType="number-pad"
+              onChangeText={(text) => setDonationAmount(text)}
+              style={{ fontSize: 30, fontWeight: 'bold', fontFamily: 'Bold' }}
+            />
+          </Modal.Body>
+          <Modal.Footer>
+            <Button.Group>
+              <Button
+                onPress={() => proceedToPayment()}
+                backgroundColor={Colors.adoptButtonColor}
+              >
+                Proceed
+              </Button>
             </Button.Group>
           </Modal.Footer>
         </Modal.Content>

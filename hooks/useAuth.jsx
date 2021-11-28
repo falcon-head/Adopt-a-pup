@@ -1,6 +1,5 @@
 import React, { createContext, useContext, useMemo, useState } from 'react';
 import { View, Text } from 'native-base';
-import * as Google from 'expo-google-app-auth';
 import {
   GoogleAuthProvider,
   onAuthStateChanged,
@@ -11,18 +10,21 @@ import { auth } from '../firebase';
 import { useEffect } from 'react';
 import { doc, serverTimestamp, setDoc } from '@firebase/firestore';
 import { db } from '../firebase';
+import {
+  GoogleSignin,
+  statusCodes,
+} from '@react-native-google-signin/google-signin';
 
 const AuthContext = createContext({});
 
 //items to get from the google login
-const config = {
-  androidClientId:
-    '95867268624-78mpvmn8m2ruq2a8md1g6r3744k0v3gq.apps.googleusercontent.com',
+GoogleSignin.configure({
+  webClientId:
+    '816256765542-m9bofs3aiq8vieamrmkjf6qpuql5l78e.apps.googleusercontent.com',
   iosClientId:
-    '95867268624-21ttstoj2namgbtdtfujda35m8sd5quj.apps.googleusercontent.com',
+    '816256765542-j9d3vkmbncfbmetvh1ofvkghlcr0363n.apps.googleusercontent.com',
   scopes: ['profile', 'email'],
-  Permissions: ['public_profile', 'email', 'gender', 'location'],
-};
+});
 
 // use createContext to store the user login data
 export const AuthProvider = ({ children }) => {
@@ -60,22 +62,43 @@ export const AuthProvider = ({ children }) => {
 
   // handle sign in with google
   const signInWithGoogleAsync = async () => {
-    await Google.logInAsync(config)
-      .then(async (result) => {
-        if (result.type === 'success') {
-          const { idToken, accessToken } = result;
-          const credential = GoogleAuthProvider.credential(
-            idToken,
-            accessToken
-          );
-          await signInWithCredential(auth, credential);
-        }
-        const user = result.user;
-        pushToDB(user);
+    try {
+      await GoogleSignin.hasPlayServices();
+      const { idToken, accessToken } = await GoogleSignin.signIn();
+      const googleCredential = await GoogleAuthProvider.credential(
+        idToken,
+        accessToken
+      );
+      await signInWithCredential(auth, googleCredential);
+    } catch (error) {
+      if (error.code === statusCodes.SIGN_IN_CANCELLED) {
+        // user cancelled the login flow
+      } else if (error.code === statusCodes.IN_PROGRESS) {
+        // operation (e.g. sign in) is in progress already
+      } else if (error.code === statusCodes.PLAY_SERVICES_NOT_AVAILABLE) {
+        // play services not available or outdated
+      } else {
+        // some other error happened
+        console.log(error);
+      }
+      // }
+      // await Google.logInAsync(config)
+      //   .then(async (result) => {
+      //     if (result.type === 'success') {
+      //       const { idToken, accessToken } = result;
+      //       const credential = GoogleAuthProvider.credential(
+      //         idToken,
+      //         accessToken
+      //       );
+      //       await signInWithCredential(auth, credential);
+      //     }
+      //     const user = result.user;
+      //     pushToDB(user);
 
-        return Promise.reject();
-      })
-      .catch((error) => setErrors(error));
+      //     return Promise.reject();
+      //   })
+      //   .catch((error) => setErrors(error));
+    }
   };
 
   //using the memo to stop the re-renering of all the component
