@@ -292,7 +292,7 @@ export default function HomeDetails({ navigation, route }) {
         <Box>
           {item.likedUsers.length > 0 ? (
             <Avatar.Group size="md" max={2}>
-              {item.likedUsers.map((item, index) => (
+              {item.likedUsers.reverse().map((item, index) => (
                 <Avatar
                   bg="green.500"
                   key={index}
