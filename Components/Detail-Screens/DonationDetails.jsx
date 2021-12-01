@@ -13,6 +13,7 @@ import {
   FormControl,
   Input,
   Button,
+  useToast,
 } from 'native-base';
 import { Share, StyleSheet } from 'react-native';
 import { Colors } from '../../Styles/Colors';
@@ -42,6 +43,8 @@ import {
   connectFunctionsEmulator,
   getFunctions,
 } from 'firebase/functions';
+import ButtonLoader from '../../assets/Animations/Done/button-loading.json';
+import LottieView from 'lottie-react-native';
 
 const DonationDetails = ({ navigation, route }) => {
   // Capture the data from route
@@ -59,59 +62,106 @@ const DonationDetails = ({ navigation, route }) => {
   // extra data useStates
   const [phoneNumber, setPhoneNumber] = useState(null);
   const [address, setAddress] = useState(null);
-  var [donationAmount, setDonationAmount] = useState(1);
-  var [responseState, setResponseState] = useState('');
-  var [apiResult, setApiResult] = useState([]);
+  const [donationAmount, setDonationAmount] = useState('');
+  const [buttonLoader, setButtonLoader] = useState(false);
 
+  //toast initialization
+  const toast = useToast();
+
+  // empty check
   const emptyCheck = !phoneNumber || !address;
 
   const proceedToPayment = () => {
     setModalVisible(false);
+    setButtonLoader(true);
 
     const orderData = { amount: donationAmount };
 
     // function to handle the donation
-    const functions = getFunctions();
+    const functions = getFunctions(app);
     // connectFunctionsEmulator(functions, 'localhost', 8081);
     const extraData = httpsCallable(functions, 'getOrderData');
     extraData(orderData)
       .then((result) => {
-        console.log(result);
-        setApiResult(result.data);
+        var inputParams = {
+          orderId: result.data.id,
+          orderAmount: result.data.amount,
+          orderCurrency: result.data.currency,
+          tokenData: result.data.data.cftoken,
+          customerName: user.displayName,
+          customerPhone: '9964135666',
+          customerEmail: user.email,
+          notifyUrl: '',
+          appId: '1100126e5eef8ffc5bbe085ced210011',
+          orderNote: 'Donation for' + item.name,
+        };
+        // //retrieve the id
+        RNPgReactNativeSDK.startPaymentUPI(inputParams, 'TEST', (result) => {
+          var responseState = JSON.parse(result);
+          setDonationAmount(null);
+          if (responseState.txStatus === 'FAILED') {
+            donationRequest(responseState);
+            navigation.navigate('PaymentFailureScreen');
+            setButtonLoader(false);
+          } else {
+            donationRequest(responseState);
+            navigation.navigate('PaymentSuccessScreen');
+            setButtonLoader(false);
+          }
+        });
       })
       .catch((error) => {
         console.log(error.code);
         console.log(error.message);
         console.log(error.details);
       });
+  };
 
-    if (apiResult.length > 0) {
-      //whenver the api result is set run this
-      var inputParams = {
-        orderId: apiResult.id,
-        orderAmount: parseFloat(apiResult.amount),
-        orderCurrency: apiResult.currency,
-        tokenData: apiResult.data.cftoken,
-        customerName: user.name,
-        customerPhone: '',
-        customerEmail: user.email,
-        notifyUrl: '',
-        appId: '1100126e5eef8ffc5bbe085ced210011',
-        orderNote: 'Donation for' + item.name,
-      };
+  // push the payemt data to database
+  const donationRequest = async (response) => {
+    const docRef = doc(db, 'users', user.uid);
 
-      // //retrieve the id
-      RNPgReactNativeSDK.startPaymentUPI(inputParams, 'TEST', (result) => {
-        console.log(result);
-        var resp = '';
-        var obj = JSON.parse(result, function (key, value) {
-          console.log(key);
-          console.log(value);
-          resp += key + ' : ' + value + '\n';
-        });
-        setResponseState(resp);
+    // Donation data
+    const donationData = {
+      name: user.displayName,
+      donatedTo: item.id,
+      donatedCause: item.title,
+      transactionStatus: response.txStatus,
+      transactionId: response.referenceId,
+      paymentMode: response.paymentMode,
+      status: response.status,
+      orderAmount: response.orderAmount,
+      orderId: response.orderId,
+      signature: response.signature,
+    };
+
+    try {
+      await updateDoc(docRef, {
+        donations: arrayUnion(donationData),
       });
+    } catch (error) {
+      console.log(error);
+      alert('Something went wrong');
     }
+  };
+  // update user data
+  const updateUserData = () => {
+    setShowModal(false);
+    setDoc(doc(db, 'users', user.uid), {
+      name: user.displayName,
+      email: user.email,
+      photoURL: user.photoURL,
+      uid: user.uid,
+      phoneNumber: phoneNumber,
+      addressTwo: address,
+      requestedPet: [],
+      cards: [],
+      donations: [],
+    });
+    toast.show({
+      description:
+        'Your profile has been updated successfully. You can donate now.',
+    });
   };
 
   // Handle the donation request
@@ -176,11 +226,24 @@ const DonationDetails = ({ navigation, route }) => {
           </ScrollView>
         </Box>
         <Box style={styles.donationButton}>
-          <Pressable style={styles.donateButton}>
-            <TouchableOpacity onPress={() => handleDonate()}>
-              <Text style={styles.donateText}>Donate</Text>
-            </TouchableOpacity>
-          </Pressable>
+          <>
+            {!buttonLoader ? (
+              <Pressable style={styles.donateButton}>
+                <TouchableOpacity onPress={() => handleDonate()}>
+                  <Text style={styles.donateText}>Donate</Text>
+                </TouchableOpacity>
+              </Pressable>
+            ) : (
+              <Pressable style={styles.donateButton}>
+                <LottieView
+                  source={ButtonLoader}
+                  autoPlay
+                  loop
+                  style={styles.lottieLoader}
+                />
+              </Pressable>
+            )}
+          </>
         </Box>
       </Box>
       <Modal
@@ -360,5 +423,9 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: 'bold',
     color: Colors.white,
+  },
+  lottieLoader: {
+    width: '100%',
+    height: 40,
   },
 });
