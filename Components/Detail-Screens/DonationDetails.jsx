@@ -96,16 +96,18 @@ const DonationDetails = ({ navigation, route }) => {
           orderNote: 'Donation for' + item.name,
         };
         // //retrieve the id
-        RNPgReactNativeSDK.startPaymentUPI(inputParams, 'TEST', (result) => {
+        RNPgReactNativeSDK.startPaymentWEB(inputParams, 'TEST', (result) => {
           var responseState = JSON.parse(result);
           setDonationAmount(null);
           if (responseState.txStatus === 'FAILED') {
             donationRequest(responseState);
             navigation.navigate('PaymentFailureScreen');
             setButtonLoader(false);
-          } else {
+          } else if (responseState.txStatus === 'SUCCESS') {
             donationRequest(responseState);
             navigation.navigate('PaymentSuccessScreen');
+            setButtonLoader(false);
+          } else {
             setButtonLoader(false);
           }
         });
