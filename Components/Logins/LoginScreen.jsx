@@ -64,14 +64,7 @@ export default function LoginScreen() {
   };
 
   return (
-    <Box
-      px={5}
-      alignItems="center"
-      flex="1"
-      alignItems="center"
-      flexDirection="row"
-      safeArea
-    >
+    <Box px={5} alignItems="center" flex="1" flexDirection="row" safeArea>
       <VStack flex="1">
         <Heading size="xl" fontWeight="normal">
           Hey,

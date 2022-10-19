@@ -1,3 +1,4 @@
+// list of all the text used in the application
 export const CommonStrings = {
   home: 'Adoption',
   homes: 'Adopt',

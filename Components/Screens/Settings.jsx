@@ -26,7 +26,6 @@ export default function Settings() {
       Linking.openURL('itms-apps://itunes.apple.com/app/id1435694583');
     }
   };
-
   // Open send Email intent
   const sendEmail = (number) => {
     if (1 == number) {

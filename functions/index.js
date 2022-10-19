@@ -1,11 +1,12 @@
 // firebase function
-
 const functions = require('firebase-functions');
 const orderid = require('order-id')('key');
 const axios = require('axios').default;
 const cors = require('cors')({ origin: true });
+require('dotenv').config();
 
 function getDetails(amount, currency, id, config) {
+  // capture the data with axios and return the response
   const promise = axios.post(
     'https://test.cashfree.com/api/v2/cftoken/order',
     {
@@ -34,8 +35,8 @@ exports.getOrderData = functions.https.onCall((data) => {
   var config = {
     mode: 'no-cors',
     headers: {
-      'x-client-id': '1100126e5eef8ffc5bbe085ced210011',
-      'x-client-secret': '5f318b2788c96e36c577f45ab9e16d4f4ec63744',
+      'x-client-id': process.env.X_CLIENT_ID,
+      'x-client-secret': process.env.X_CLIENT_SECRET,
       'Access-Control-Allow-Origin': '*',
       'Content-Type': 'application/json',
     },
