@@ -133,3 +133,5 @@ package-lock.json
 .metro-health-check*i
 yarn.lock
 package-lock.json
+.env
+/functions/package-lock.json
