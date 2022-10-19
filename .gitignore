@@ -134,3 +134,4 @@ package-lock.json
 yarn.lock
 package-lock.json
 .env
+/functions/package-lock.json
