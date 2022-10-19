@@ -1,5 +1,4 @@
 import React, { createContext, useContext, useMemo, useState } from 'react';
-import { View, Text } from 'native-base';
 import {
   GoogleAuthProvider,
   onAuthStateChanged,
@@ -8,21 +7,19 @@ import {
 } from '@firebase/auth';
 import { auth } from '../firebase';
 import { useEffect } from 'react';
-import { doc, serverTimestamp, setDoc } from '@firebase/firestore';
-import { db } from '../firebase';
 import {
   GoogleSignin,
   statusCodes,
 } from '@react-native-google-signin/google-signin';
+import * as dotenv from 'dotenv';
+dotenv.config();
 
 const AuthContext = createContext({});
 
-//items to get from the google login
+// Configuring the google sign in
 GoogleSignin.configure({
-  webClientId:
-    '816256765542-m9bofs3aiq8vieamrmkjf6qpuql5l78e.apps.googleusercontent.com',
-  iosClientId:
-    '816256765542-j9d3vkmbncfbmetvh1ofvkghlcr0363n.apps.googleusercontent.com',
+  webClientId: process.env.GOOGLE_WEB_CLIENT_ID,
+  iosClientId: process.env.GOOGLE_WEB_CLIENT_ID,
   scopes: ['profile', 'email'],
 });
 
@@ -34,7 +31,7 @@ export const AuthProvider = ({ children }) => {
   const [initialLoading, setInitialLoading] = useState(true);
 
   // auth logged in? useEffect
-  //if i login the useeffect will be run to track whether the user is logged in or not
+  // if i login the useeffect will be run to track whether the user is logged in or not
   // with unsubscribe from the auth state
   useEffect(
     () =>
@@ -81,27 +78,10 @@ export const AuthProvider = ({ children }) => {
         // some other error happened
         console.log(error);
       }
-      // }
-      // await Google.logInAsync(config)
-      //   .then(async (result) => {
-      //     if (result.type === 'success') {
-      //       const { idToken, accessToken } = result;
-      //       const credential = GoogleAuthProvider.credential(
-      //         idToken,
-      //         accessToken
-      //       );
-      //       await signInWithCredential(auth, credential);
-      //     }
-      //     const user = result.user;
-      //     pushToDB(user);
-
-      //     return Promise.reject();
-      //   })
-      //   .catch((error) => setErrors(error));
     }
   };
 
-  //using the memo to stop the re-renering of all the component
+  // using the memo to stop the re-renering of all the component
   // cache most of the values, the render will run only when user and errors are triggered
   const memoedValue = useMemo(
     () => ({
@@ -113,6 +93,7 @@ export const AuthProvider = ({ children }) => {
     [user, errors]
   );
 
+  // auth context provider from
   return (
     <AuthContext.Provider value={memoedValue}>
       {!initialLoading && children}

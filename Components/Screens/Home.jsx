@@ -150,6 +150,7 @@ export default function Home() {
     }
   };
 
+  // the initial card
   const TheCard = ({ item }) => {
     return (
       <AdoptCard
@@ -163,9 +164,9 @@ export default function Home() {
     );
   };
 
-  const openFilter = () => {
-    navigations.navigate('FilterDetailScreen');
-  };
+  // const openFilter = () => {
+  //   navigations.navigate('FilterDetailScreen');
+  // };
 
   return (
     <>

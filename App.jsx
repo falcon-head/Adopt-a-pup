@@ -30,8 +30,10 @@ const getFonts = () => {
 };
 
 export default function App() {
+  // variable to check check the font state
   const [fontLoaded, setFontLoaded] = useState(false);
 
+  // if fonts are not loaded, show loading screen else show the home page
   if (fontLoaded) {
     return (
       <NativeBaseProvider theme={theme}>

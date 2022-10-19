@@ -13,6 +13,7 @@ import auth from '../../hooks/useAuth';
 let { height, width } = Dimensions.get('window');
 
 export default function GoogleAuthLogin() {
+  // Sign in with google auth object
   const { signInWithGoogleAsync } = auth();
 
   return (

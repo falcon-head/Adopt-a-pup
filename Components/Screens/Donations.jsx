@@ -45,6 +45,7 @@ export default function Donations() {
     return unsub;
   }, []);
 
+  // on press donate card, navigate to the donation details screen
   const donateCard = ({ item }) => {
     return (
       <DonationArticles
@@ -56,6 +57,7 @@ export default function Donations() {
 
   // Refresh the data
   const refreshData = async () => {
+    // enabling the loading screen
     setLoading(true);
     const refreshQuery = query(collection(db, 'donationdb'));
     try {
@@ -65,13 +67,16 @@ export default function Donations() {
         id: doc.id,
         ...doc.data(),
       }));
+      // set the data
       setData(docArray);
+      // disable the loading screen
       setLoading(false);
     } catch (error) {
       console.log(error.message);
     }
   };
 
+  // if not loading return the data else return the loading screen
   return (
     <>
       {!loading ? (
@@ -107,6 +112,7 @@ export default function Donations() {
   );
 }
 
+// styles sheet
 const styles = StyleSheet.create({
   settingsScrollView: {
     flex: 1,

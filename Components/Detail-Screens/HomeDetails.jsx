@@ -262,11 +262,7 @@ export default function HomeDetails({ navigation, route }) {
                   <Box style={styles.listViewBox}>
                     {item.health.map((item, index) => (
                       <Box style={styles.healthBox} key={index}>
-                        <HStack
-                          display="flex"
-                          flexDirection="row"
-                          display="flex"
-                        >
+                        <HStack display="flex" flexDirection="row">
                           <Box style={styles.circle}></Box>
                           <VStack paddingLeft="5">
                             <Text style={styles.healthDateText}>

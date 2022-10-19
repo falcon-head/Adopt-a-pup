@@ -72,7 +72,9 @@ const DonationDetails = ({ navigation, route }) => {
   const emptyCheck = !phoneNumber || !address;
 
   const proceedToPayment = () => {
+    // disabling the modal
     setModalVisible(false);
+    // enabling the button loader
     setButtonLoader(true);
 
     const orderData = { amount: donationAmount };
@@ -95,7 +97,7 @@ const DonationDetails = ({ navigation, route }) => {
           appId: '1100126e5eef8ffc5bbe085ced210011',
           orderNote: 'Donation for' + item.name,
         };
-        // //retrieve the id
+        // navigate to the payment gateway
         RNPgReactNativeSDK.startPaymentWEB(inputParams, 'TEST', (result) => {
           var responseState = JSON.parse(result);
           setDonationAmount(null);
